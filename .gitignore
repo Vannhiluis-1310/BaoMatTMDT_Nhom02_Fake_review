@@ -1,0 +1,26 @@
+# Local/runtime caches
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Large generated artifacts
+artifacts/**/*.npy
+artifacts/**/*.npz
+artifacts/**/*.pt
+artifacts/**/*.pth
+artifacts/**/*.h5
+artifacts/**/*.keras
+artifacts/**/*.pkl
+artifacts/**/*.joblib
+artifacts/**/*.onnx
+
+# Generated data copies
+data/interim/*
+data/processed/*
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+
+# Logs
+logs/*
+!logs/.gitkeep

@@ -1,0 +1,4 @@
+split,rows,bert_dim,behavioral_dim,fused_dim,missing_behavioral_values,non_finite_fused_values,label_0_count,label_1_count
+train,29923,768,9,777,0,0,17677,12246
+val,6413,768,9,777,0,0,3789,2624
+test,6413,768,9,777,0,0,3789,2624

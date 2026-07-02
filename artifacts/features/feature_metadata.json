@@ -1,0 +1,107 @@
+{
+  "generated_at_utc": "2026-06-01T04:07:17.459598+00:00",
+  "seed": 42,
+  "bert": {
+    "model_name": "answerdotai/ModernBERT-base",
+    "pooling": "masked_mean_last_hidden_state",
+    "max_length": 160,
+    "batch_size": 8,
+    "embedding_dim": 768
+  },
+  "behavioral_features": {
+    "all": [
+      "basic_char_len_log",
+      "basic_word_count_log",
+      "basic_rating_deviation",
+      "basic_sentiment_compound",
+      "basic_verified_purchase",
+      "adv_review_velocity_30d",
+      "adv_product_burst_7d",
+      "adv_reviewer_behavior_score",
+      "adv_time_gap_hours_log"
+    ],
+    "basic": [
+      "basic_char_len_log",
+      "basic_word_count_log",
+      "basic_rating_deviation",
+      "basic_sentiment_compound",
+      "basic_verified_purchase"
+    ],
+    "advanced": [
+      "adv_review_velocity_30d",
+      "adv_product_burst_7d",
+      "adv_reviewer_behavior_score",
+      "adv_time_gap_hours_log"
+    ],
+    "count": 9,
+    "sentiment_backend": "nltk_vader",
+    "train_rating_mean": 3.9354342813220597,
+    "reviewer_behavior_meta": {
+      "status": "generated",
+      "reviewer_count": 29628,
+      "global_score": -7.29056945021839e-17
+    },
+    "notes": []
+  },
+  "fusion": {
+    "order": [
+      "bert_embedding",
+      "scaled_behavioral_features"
+    ],
+    "fused_dim": 777,
+    "behavioral_scaler_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/behavioral_scaler.joblib"
+  },
+  "schema": {
+    "text": "text",
+    "label": "label_binary",
+    "reviewer": "user_id",
+    "product": "asin",
+    "rating": "rating",
+    "timestamp": "timestamp",
+    "verified_purchase": "verified_purchase",
+    "helpful_vote": "helpful_vote"
+  },
+  "row_counts": {
+    "train": 29923,
+    "val": 6413,
+    "test": 6413
+  },
+  "artifacts": {
+    "bert": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/bert_train.npy",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/bert_val.npy",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/bert_test.npy"
+    },
+    "behavioral": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/behavioral_train.csv",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/behavioral_val.csv",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/behavioral_test.csv"
+    },
+    "features_raw": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_train.npy",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_val.npy",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_test.npy"
+    },
+    "labels": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_train.npy",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_val.npy",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_test.npy"
+    },
+    "row_ids": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/row_ids_train.csv",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/row_ids_val.csv",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/row_ids_test.csv"
+    },
+    "feature_dictionary": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/feature_dictionary.csv",
+    "feature_quality_report": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase2_feature_quality_report.csv",
+    "memory_report": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase2_memory_report.csv",
+    "leakage_check_report": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase2_leakage_check_report.csv"
+  },
+  "leakage_policy": {
+    "scaler_fit": "train only",
+    "rating_mean": "train only",
+    "reviewer_behavior_map": "fit on train only without labels",
+    "validation_test_transform": "use train-fitted scaler and train-fitted aggregate maps",
+    "label_usage": "labels are saved but not used to construct feature values"
+  }
+}

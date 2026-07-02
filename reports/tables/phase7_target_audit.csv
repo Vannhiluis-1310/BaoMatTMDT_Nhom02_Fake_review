@@ -1,0 +1,10 @@
+generated_at_utc,seed,split,model_variant,threshold,threshold_strategy,metric,actual,target,gap_actual_minus_target,pass,note
+2026-06-11T12:17:43.279291+00:00,42,test,phase5_weighted_blend,0.5,default_0.5,macro_f1,0.9433195044611249,0.89,0.05331950446112488,True,target_met
+2026-06-11T12:17:43.279328+00:00,42,test,phase5_weighted_blend,0.5,default_0.5,precision_fake,0.9698720594304581,0.975,-0.005127940569541911,False,target_missed_report_gap_explicitly
+2026-06-11T12:17:43.279343+00:00,42,test,phase5_weighted_blend,0.5,default_0.5,roc_auc,0.976899895557744,0.93,0.04689989555774399,True,target_met
+2026-06-11T12:17:43.279487+00:00,42,test,phase5_weighted_blend,0.3,phase5_balanced_macro_f1_threshold,macro_f1,0.9463427711905172,0.89,0.05634277119051723,True,target_met
+2026-06-11T12:17:43.279506+00:00,42,test,phase5_weighted_blend,0.3,phase5_balanced_macro_f1_threshold,precision_fake,0.9343951459992416,0.975,-0.04060485400075842,False,target_missed_report_gap_explicitly
+2026-06-11T12:17:43.279518+00:00,42,test,phase5_weighted_blend,0.3,phase5_balanced_macro_f1_threshold,roc_auc,0.976899895557744,0.93,0.04689989555774399,True,target_met
+2026-06-11T12:17:43.279599+00:00,42,test,phase5_weighted_blend,0.6,phase5_selected_precision_threshold,macro_f1,0.9126282238377282,0.89,0.022628223837728223,True,target_met
+2026-06-11T12:17:43.279613+00:00,42,test,phase5_weighted_blend,0.6,phase5_selected_precision_threshold,precision_fake,0.981642955484167,0.975,0.006642955484167046,True,target_met
+2026-06-11T12:17:43.279625+00:00,42,test,phase5_weighted_blend,0.6,phase5_selected_precision_threshold,roc_auc,0.976899895557744,0.93,0.04689989555774399,True,target_met

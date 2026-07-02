@@ -1,0 +1,13 @@
+metric,value
+original_rows,50000
+missing_text_before,12
+missing_label_before,0
+duplicate_rows_detected,0
+duplicate_text_label_detected,7247
+rows_dropped_missing_text_or_label,57
+duplicate_text_label_before_drop,7194
+duplicate_rows_dropped,7194
+final_rows,42749
+rows_removed_total,7251
+drop_duplicates,True
+duplicate_subset,"[""text"", ""label""]"

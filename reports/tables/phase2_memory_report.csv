@@ -1,0 +1,7 @@
+split,artifact,shape,dtype,memory_mb
+train,bert_train.npy,"(29923, 768)",float32,87.665
+train,features_raw_train.npy,"(29923, 777)",float32,88.6924
+val,bert_val.npy,"(6413, 768)",float32,18.7881
+val,features_raw_val.npy,"(6413, 777)",float32,19.0083
+test,bert_test.npy,"(6413, 768)",float32,18.7881
+test,features_raw_test.npy,"(6413, 777)",float32,19.0083

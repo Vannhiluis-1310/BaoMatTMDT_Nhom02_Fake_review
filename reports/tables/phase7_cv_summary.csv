@@ -1,0 +1,2 @@
+model_variant,cv_mode,folds,sample_rows,macro_f1_mean,macro_f1_std,precision_fake_mean,precision_fake_std,recall_fake_mean,roc_auc_mean,roc_auc_std,pr_auc_mean,generated_at_utc,seed,duration_seconds
+cv_lightgbm_pca,full_5fold_cv,5,36336,0.8659395700499035,0.003559583646416652,0.903090223293548,0.0062316118941024914,0.7743779421654338,0.9233361839340983,0.004081050335223016,0.9147587334834277,2026-06-11T12:25:49.694725+00:00,42,483.58

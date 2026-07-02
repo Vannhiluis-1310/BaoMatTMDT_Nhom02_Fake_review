@@ -1,0 +1,1342 @@
+Cell 1 [markdown]:
+# 01 - EDA and Preprocessing
+
+**Phase:** 1  
+**Notebook:** `01_EDA_Preprocessing.ipynb`  
+**Main output:** cleaned dataset, train/validation/test split files, EDA tables, EDA figures, and reproducibility metadata.
+
+----------------------------------------
+Cell 2 [code]:
+try:
+    import google.colab
+    IN_COLAB = True
+except Exception:
+    IN_COLAB = False
+
+if not IN_COLAB:
+    raise RuntimeError(
+        "Run this notebook in Google Colab unless local execution is explicitly approved."
+    )
+
+----------------------------------------
+Cell 3 [code]:
+from google.colab import drive
+
+drive.mount('/content/drive')
+
+----------------------------------------
+Cell 4 [code]:
+import json
+import random
+from datetime import datetime, timezone
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+
+PROJECT_ROOT = Path('/content/drive/MyDrive/Fake_reviews')
+DATASET_PATH = PROJECT_ROOT / 'data' / 'final_labeled_fake_reviews.csv'
+PROCESSED_DIR = PROJECT_ROOT / 'data' / 'processed'
+REPORT_TABLE_DIR = PROJECT_ROOT / 'reports' / 'tables'
+REPORT_FIGURE_DIR = PROJECT_ROOT / 'reports' / 'figures'
+
+TEST_SIZE = 0.15
+VAL_SIZE = 0.15
+
+for path in [PROCESSED_DIR, REPORT_TABLE_DIR, REPORT_FIGURE_DIR]:
+    path.mkdir(parents=True, exist_ok=True)
+
+pd.set_option('display.max_columns', 80)
+pd.set_option('display.max_colwidth', 120)
+sns.set_theme(style='whitegrid')
+
+----------------------------------------
+Cell 5 [markdown]:
+## Schema 
+----------------------------------------
+Cell 6 [code]:
+TEXT_COL_OVERRIDE = None
+LABEL_COL_OVERRIDE = None
+REVIEWER_COL_OVERRIDE = None
+PRODUCT_COL_OVERRIDE = None
+RATING_COL_OVERRIDE = None
+TIMESTAMP_COL_OVERRIDE = None
+
+LABEL_MAPPING_OVERRIDE = None
+# Example if needed:
+# LABEL_MAPPING_OVERRIDE = {'fake': 1, 'real': 0, 'CG': 1, 'OR': 0}
+
+TEXT_CANDIDATES = [
+    'review_text', 'review text', 'text', 'review', 'content', 'body',
+    'Review Text', 'Review', 'reviews.text'
+]
+LABEL_CANDIDATES = [
+    'label', 'class', 'target', 'fake', 'is_fake', 'is fake', 'Label',
+    'CG_OR', 'category', 'polarity'
+]
+REVIEWER_CANDIDATES = [
+    'reviewer_id', 'reviewer id', 'user_id', 'user id', 'userid',
+    'reviewerID', 'customer_id', 'author', 'username'
+]
+PRODUCT_CANDIDATES = [
+    'product_id', 'product id', 'asin', 'productID', 'item_id',
+    'item id', 'product'
+]
+RATING_CANDIDATES = [
+    'rating', 'stars', 'score', 'overall', 'review_rating', 'rate'
+]
+TIMESTAMP_CANDIDATES = [
+    'timestamp', 'time', 'date', 'review_time', 'review time',
+    'unixReviewTime', 'reviewTime', 'created_at'
+]
+
+
+def _normalize_name(name):
+    return str(name).strip().lower().replace('-', '_').replace(' ', '_')
+
+
+def infer_column(columns, candidates, override=None, required=False, role='column'):
+    columns = list(columns)
+    if override:
+        if override not in columns:
+            raise ValueError(
+                f"{role} override '{override}' was not found. Available columns: {columns}"
+            )
+        return override
+
+    exact_lookup = {str(col): col for col in columns}
+    normalized_lookup = {_normalize_name(col): col for col in columns}
+
+    for candidate in candidates:
+        if candidate in exact_lookup:
+            return exact_lookup[candidate]
+        normalized = _normalize_name(candidate)
+        if normalized in normalized_lookup:
+            return normalized_lookup[normalized]
+
+    for col in columns:
+        normalized_col = _normalize_name(col)
+        if any(_normalize_name(candidate) in normalized_col for candidate in candidates):
+            return col
+
+    if required:
+        raise ValueError(
+            f"Could not infer mandatory {role}. Set the corresponding override variable. "
+            f"Available columns: {columns}"
+        )
+    return None
+
+----------------------------------------
+Cell 7 [code]:
+if not DATASET_PATH.exists():
+    raise FileNotFoundError(
+        f"Dataset not found at {DATASET_PATH}. Update PROJECT_ROOT or DATASET_PATH."
+    )
+
+df = pd.read_csv(DATASET_PATH, low_memory=False)
+original_row_count = len(df)
+
+print('Dataset loaded')
+print('Shape:', df.shape)
+display(df.head())
+display(df.dtypes.to_frame('dtype'))
+
+----------------------------------------
+Cell 8 [code]:
+TEXT_COL = infer_column(
+    df.columns, TEXT_CANDIDATES, TEXT_COL_OVERRIDE, required=True, role='text column'
+)
+LABEL_COL = infer_column(
+    df.columns, LABEL_CANDIDATES, LABEL_COL_OVERRIDE, required=True, role='label column'
+)
+REVIEWER_COL = infer_column(
+    df.columns, REVIEWER_CANDIDATES, REVIEWER_COL_OVERRIDE, required=False, role='reviewer column'
+)
+PRODUCT_COL = infer_column(
+    df.columns, PRODUCT_CANDIDATES, PRODUCT_COL_OVERRIDE, required=False, role='product column'
+)
+RATING_COL = infer_column(
+    df.columns, RATING_CANDIDATES, RATING_COL_OVERRIDE, required=False, role='rating column'
+)
+TIMESTAMP_COL = infer_column(
+    df.columns, TIMESTAMP_CANDIDATES, TIMESTAMP_COL_OVERRIDE, required=False, role='timestamp column'
+)
+
+schema = {
+    'text_col': TEXT_COL,
+    'label_col': LABEL_COL,
+    'reviewer_col': REVIEWER_COL,
+    'product_col': PRODUCT_COL,
+    'rating_col': RATING_COL,
+    'timestamp_col': TIMESTAMP_COL,
+}
+
+print('Inferred schema')
+print(json.dumps(schema, indent=2, ensure_ascii=False))
+
+----------------------------------------
+Cell 9 [markdown]:
+## Initial EDA
+
+This section covers label distribution, missing values, duplicate rows, review length, class imbalance, and optional reviewer/product/rating/time summaries.
+----------------------------------------
+Cell 10 [code]:
+missing_counts = df.isna().sum().sort_values(ascending=False)
+duplicate_row_count = int(df.duplicated().sum())
+duplicate_text_label_count = int(df.duplicated(subset=[TEXT_COL, LABEL_COL]).sum())
+
+label_counts = df[LABEL_COL].value_counts(dropna=False)
+label_percent = df[LABEL_COL].value_counts(dropna=False, normalize=True).mul(100).round(2)
+label_distribution = pd.DataFrame({
+    'count': label_counts,
+    'percent': label_percent,
+})
+
+review_length = df[TEXT_COL].fillna('').astype(str).str.len()
+review_word_count = df[TEXT_COL].fillna('').astype(str).str.split().str.len()
+review_length_summary = pd.DataFrame({
+    'char_length': review_length.describe(),
+    'word_count': review_word_count.describe(),
+})
+
+non_null_label_counts = df[LABEL_COL].dropna().value_counts()
+class_imbalance_ratio = None
+if len(non_null_label_counts) >= 2 and non_null_label_counts.min() > 0:
+    class_imbalance_ratio = float(non_null_label_counts.max() / non_null_label_counts.min())
+
+print('Missing values')
+display(missing_counts.to_frame('missing_count'))
+print('Duplicate rows:', duplicate_row_count)
+print('Duplicate text/label rows:', duplicate_text_label_count)
+print('Label distribution')
+display(label_distribution)
+print('Review length summary')
+display(review_length_summary)
+print('Class imbalance ratio:', class_imbalance_ratio)
+
+----------------------------------------
+Cell 11 [code]:
+optional_summaries = {}
+
+if RATING_COL:
+    optional_summaries['rating_summary'] = df[RATING_COL].describe(include='all').to_dict()
+    print('Rating summary')
+    display(df[RATING_COL].describe(include='all'))
+
+if REVIEWER_COL:
+    reviewer_counts = df[REVIEWER_COL].value_counts(dropna=False)
+    optional_summaries['reviewer_count'] = int(reviewer_counts.shape[0])
+    optional_summaries['top_reviewers'] = reviewer_counts.head(10).to_dict()
+    print('Reviewer count:', optional_summaries['reviewer_count'])
+    display(reviewer_counts.head(10).to_frame('reviews'))
+
+if PRODUCT_COL:
+    product_counts = df[PRODUCT_COL].value_counts(dropna=False)
+    optional_summaries['product_count'] = int(product_counts.shape[0])
+    optional_summaries['top_products'] = product_counts.head(10).to_dict()
+    print('Product count:', optional_summaries['product_count'])
+    display(product_counts.head(10).to_frame('reviews'))
+
+if TIMESTAMP_COL:
+    timestamp_preview = pd.to_datetime(df[TIMESTAMP_COL], errors='coerce')
+    optional_summaries['timestamp_parse_rate'] = float(timestamp_preview.notna().mean())
+    optional_summaries['timestamp_min'] = str(timestamp_preview.min())
+    optional_summaries['timestamp_max'] = str(timestamp_preview.max())
+    print('Timestamp parse rate:', optional_summaries['timestamp_parse_rate'])
+    print('Timestamp min/max:', optional_summaries['timestamp_min'], optional_summaries['timestamp_max'])
+
+----------------------------------------
+Cell 12 [code]:
+label_plot_path = REPORT_FIGURE_DIR / 'phase1_label_distribution.png'
+length_plot_path = REPORT_FIGURE_DIR / 'phase1_review_length_distribution.png'
+
+plt.figure(figsize=(8, 5))
+label_counts.plot(kind='bar', color='#3B82F6')
+plt.title('Label Distribution')
+plt.xlabel('Label')
+plt.ylabel('Count')
+plt.tight_layout()
+plt.savefig(label_plot_path, dpi=160)
+plt.show()
+
+plt.figure(figsize=(8, 5))
+sns.histplot(review_length, bins=50, color='#10B981')
+plt.title('Review Length Distribution')
+plt.xlabel('Characters')
+plt.ylabel('Review count')
+plt.tight_layout()
+plt.savefig(length_plot_path, dpi=160)
+plt.show()
+
+print('Saved figures:')
+print(label_plot_path)
+print(length_plot_path)
+
+----------------------------------------
+Cell 13 [markdown]:
+## Cleaning Policy
+
+Default rules:
+
+- Strip whitespace in review text.
+- Convert empty strings to missing.
+- Drop rows missing mandatory text or label.
+- Normalize labels to binary values when mapping is unambiguous.
+- Drop duplicate text/label pairs when `DROP_DUPLICATES = True`.
+
+If labels cannot be mapped safely, set `LABEL_MAPPING_OVERRIDE` explicitly.
+----------------------------------------
+Cell 14 [code]:
+DROP_DUPLICATES = True
+DUPLICATE_SUBSET = [TEXT_COL, LABEL_COL]
+
+TRUE_LABELS = {'1', 'true', 'fake', 'f', 'cg', 'computer-generated', 'computer_generated', 'deceptive', 'spam'}
+FALSE_LABELS = {'0', 'false', 'real', 'r', 'or', 'original', 'truthful', 'genuine', 'non-fake', 'non_fake'}
+
+
+def normalize_label_series(series, mapping_override=None):
+    raw = series.copy()
+    non_missing = raw.dropna()
+
+    if mapping_override is not None:
+        mapped = raw.map(mapping_override)
+        unmapped = sorted(set(non_missing.unique()) - set(mapping_override.keys()))
+        if unmapped:
+            raise ValueError(f'LABEL_MAPPING_OVERRIDE is missing values: {unmapped}')
+        return mapped.astype('int8')
+
+    if pd.api.types.is_numeric_dtype(non_missing):
+        unique_values = sorted(non_missing.unique().tolist())
+        if set(unique_values).issubset({0, 1}):
+            return raw.astype('Int64').astype('int8')
+        if len(unique_values) == 2:
+            mapping = {unique_values[0]: 0, unique_values[1]: 1}
+            print('Numeric binary labels mapped as:', mapping)
+            return raw.map(mapping).astype('int8')
+
+    normalized = raw.astype(str).str.strip().str.lower()
+    unique_normalized = sorted(set(normalized[raw.notna()].unique()))
+    if set(unique_normalized).issubset(TRUE_LABELS | FALSE_LABELS):
+        mapping = {value: 1 for value in TRUE_LABELS}
+        mapping.update({value: 0 for value in FALSE_LABELS})
+        return normalized.map(mapping).astype('int8')
+
+    if len(unique_normalized) == 2:
+        raise ValueError(
+            f"Found two label values {unique_normalized}, but their meaning is ambiguous. "
+            "Set LABEL_MAPPING_OVERRIDE, for example {'fake': 1, 'real': 0}."
+        )
+
+    raise ValueError(
+        f"Expected binary labels, found values: {unique_normalized}. "
+        "Set LABEL_MAPPING_OVERRIDE explicitly."
+    )
+
+----------------------------------------
+Cell 15 [code]:
+clean_df = df.copy()
+cleaning_report = {
+    'original_rows': int(len(clean_df)),
+    'missing_text_before': int(clean_df[TEXT_COL].isna().sum()),
+    'missing_label_before': int(clean_df[LABEL_COL].isna().sum()),
+    'duplicate_rows_detected': duplicate_row_count,
+    'duplicate_text_label_detected': duplicate_text_label_count,
+}
+
+clean_df[TEXT_COL] = clean_df[TEXT_COL].astype('string').str.strip()
+clean_df[TEXT_COL] = clean_df[TEXT_COL].replace('', pd.NA)
+
+rows_before_required_drop = len(clean_df)
+clean_df = clean_df.dropna(subset=[TEXT_COL, LABEL_COL]).copy()
+cleaning_report['rows_dropped_missing_text_or_label'] = int(rows_before_required_drop - len(clean_df))
+
+clean_df['label_binary'] = normalize_label_series(clean_df[LABEL_COL], LABEL_MAPPING_OVERRIDE)
+
+duplicates_before_drop = int(clean_df.duplicated(subset=DUPLICATE_SUBSET).sum())
+cleaning_report['duplicate_text_label_before_drop'] = duplicates_before_drop
+
+if DROP_DUPLICATES:
+    rows_before_duplicate_drop = len(clean_df)
+    clean_df = clean_df.drop_duplicates(subset=DUPLICATE_SUBSET, keep='first').copy()
+    cleaning_report['duplicate_rows_dropped'] = int(rows_before_duplicate_drop - len(clean_df))
+else:
+    cleaning_report['duplicate_rows_dropped'] = 0
+
+clean_df['review_char_len'] = clean_df[TEXT_COL].fillna('').astype(str).str.len()
+clean_df['review_word_count'] = clean_df[TEXT_COL].fillna('').astype(str).str.split().str.len()
+
+cleaning_report['final_rows'] = int(len(clean_df))
+cleaning_report['rows_removed_total'] = int(original_row_count - len(clean_df))
+cleaning_report['drop_duplicates'] = bool(DROP_DUPLICATES)
+cleaning_report['duplicate_subset'] = DUPLICATE_SUBSET
+
+print('Cleaning report')
+print(json.dumps(cleaning_report, indent=2, ensure_ascii=False))
+print('Clean label distribution')
+display(clean_df['label_binary'].value_counts().to_frame('count'))
+
+----------------------------------------
+Cell 16 [markdown]:
+## EDA and Cleaning Report Exports
+
+These CSV files are aggregate reports only. They should not contain full raw review text.
+----------------------------------------
+Cell 17 [code]:
+eda_summary_rows = [
+    {'metric': 'original_rows', 'value': original_row_count},
+    {'metric': 'original_columns', 'value': df.shape[1]},
+    {'metric': 'missing_values_total', 'value': int(missing_counts.sum())},
+    {'metric': 'duplicate_rows', 'value': duplicate_row_count},
+    {'metric': 'duplicate_text_label_rows', 'value': duplicate_text_label_count},
+    {'metric': 'class_imbalance_ratio', 'value': class_imbalance_ratio},
+    {'metric': 'text_column', 'value': TEXT_COL},
+    {'metric': 'label_column', 'value': LABEL_COL},
+]
+
+for label_value, count in label_counts.items():
+    eda_summary_rows.append({'metric': f'label_count__{label_value}', 'value': int(count)})
+
+eda_summary_df = pd.DataFrame(eda_summary_rows)
+cleaning_report_df = pd.DataFrame([
+    {'metric': key, 'value': json.dumps(value, ensure_ascii=False) if isinstance(value, list) else value}
+    for key, value in cleaning_report.items()
+])
+
+eda_summary_path = REPORT_TABLE_DIR / 'phase1_eda_summary.csv'
+cleaning_report_path = REPORT_TABLE_DIR / 'phase1_cleaning_report.csv'
+
+eda_summary_df.to_csv(eda_summary_path, index=False)
+cleaning_report_df.to_csv(cleaning_report_path, index=False)
+
+print('Saved report tables:')
+print(eda_summary_path)
+print(cleaning_report_path)
+
+----------------------------------------
+Cell 18 [markdown]:
+## Export Clean Data
+----------------------------------------
+Cell 19 [code]:
+clean_data_path = PROCESSED_DIR / 'clean_reviews.csv'
+schema_metadata_path = PROCESSED_DIR / 'schema_metadata.json'
+
+clean_df.to_csv(clean_data_path, index=False)
+
+schema_metadata = {
+    'generated_at_utc': datetime.now(timezone.utc).isoformat(),
+    'source_dataset_path': str(DATASET_PATH),
+    'clean_data_path': str(clean_data_path),
+    'columns': schema,
+    'label_output_column': 'label_binary',
+    'original_row_count': int(original_row_count),
+    'clean_row_count': int(len(clean_df)),
+    'cleaning_policy': cleaning_report,
+}
+
+with open(schema_metadata_path, 'w', encoding='utf-8') as f:
+    json.dump(schema_metadata, f, indent=2, ensure_ascii=False)
+
+print('Saved clean data:', clean_data_path)
+print('Saved schema metadata:', schema_metadata_path)
+
+----------------------------------------
+Cell 20 [markdown]:
+## Stratified Train/Validation/Test Split
+
+Default split is 70/15/15 with `SEED = 42`. The validation proportion is computed from the non-test remainder.
+----------------------------------------
+Cell 21 [code]:
+split_target = clean_df['label_binary']
+train_val_df, test_df = train_test_split(
+    clean_df,
+    test_size=TEST_SIZE,
+    random_state=SEED,
+    stratify=split_target,
+)
+
+relative_val_size = VAL_SIZE / (1 - TEST_SIZE)
+train_df, val_df = train_test_split(
+    train_val_df,
+    test_size=relative_val_size,
+    random_state=SEED,
+    stratify=train_val_df['label_binary'],
+)
+
+train_path = PROCESSED_DIR / 'train.csv'
+val_path = PROCESSED_DIR / 'val.csv'
+test_path = PROCESSED_DIR / 'test.csv'
+
+train_df.to_csv(train_path, index=False)
+val_df.to_csv(val_path, index=False)
+test_df.to_csv(test_path, index=False)
+
+print('Split sizes')
+print('train:', train_df.shape)
+print('val:', val_df.shape)
+print('test:', test_df.shape)
+print('Saved split files:')
+print(train_path)
+print(val_path)
+print(test_path)
+
+----------------------------------------
+Cell 22 [code]:
+def label_distribution_dict(frame):
+    counts = frame['label_binary'].value_counts().sort_index()
+    percents = frame['label_binary'].value_counts(normalize=True).sort_index().mul(100).round(4)
+    return {
+        str(label): {
+            'count': int(counts.loc[label]),
+            'percent': float(percents.loc[label]),
+        }
+        for label in counts.index
+    }
+
+
+split_metadata = {
+    'generated_at_utc': datetime.now(timezone.utc).isoformat(),
+    'seed': SEED,
+    'test_size': TEST_SIZE,
+    'val_size': VAL_SIZE,
+    'train_size_effective': round(len(train_df) / len(clean_df), 6),
+    'schema': schema,
+    'label_column': LABEL_COL,
+    'label_output_column': 'label_binary',
+    'row_counts': {
+        'clean': int(len(clean_df)),
+        'train': int(len(train_df)),
+        'val': int(len(val_df)),
+        'test': int(len(test_df)),
+    },
+    'label_distribution': {
+        'clean': label_distribution_dict(clean_df),
+        'train': label_distribution_dict(train_df),
+        'val': label_distribution_dict(val_df),
+        'test': label_distribution_dict(test_df),
+    },
+    'files': {
+        'clean': str(clean_data_path),
+        'train': str(train_path),
+        'val': str(val_path),
+        'test': str(test_path),
+        'schema_metadata': str(schema_metadata_path),
+        'eda_summary': str(eda_summary_path),
+        'cleaning_report': str(cleaning_report_path),
+        'label_distribution_figure': str(label_plot_path),
+        'review_length_figure': str(length_plot_path),
+    },
+}
+
+split_metadata_path = PROCESSED_DIR / 'split_metadata.json'
+with open(split_metadata_path, 'w', encoding='utf-8') as f:
+    json.dump(split_metadata, f, indent=2, ensure_ascii=False)
+
+print('Saved split metadata:', split_metadata_path)
+print(json.dumps(split_metadata['row_counts'], indent=2))
+
+----------------------------------------
+Cell 23 [markdown]:
+## Phase 1 Completion Checklist
+
+- **DATA-01:** Dataset is loaded from the configured Colab/Drive path.
+- **DATA-02:** EDA covers label distribution, review length, missing values, duplicates, and class imbalance.
+- **DATA-03:** Missing/duplicate handling is explicit and saved in `phase1_cleaning_report.csv`.
+- **DATA-04:** Stratified train/validation/test split is generated with fixed seed and saved metadata.
+
+Expected output files:
+
+- `data/processed/clean_reviews.csv`
+- `data/processed/train.csv`
+- `data/processed/val.csv`
+- `data/processed/test.csv`
+- `data/processed/schema_metadata.json`
+- `data/processed/split_metadata.json`
+- `reports/tables/phase1_eda_summary.csv`
+- `reports/tables/phase1_cleaning_report.csv`
+- `reports/figures/phase1_label_distribution.png`
+- `reports/figures/phase1_review_length_distribution.png`
+----------------------------------------
+Cell 24 [markdown]:
+## Phase 1.1 - Advanced Fake-vs-Real EDA
+
+This section extends Phase 1 with label-aware EDA for fake review detection. Confirm `LABEL_NAME_MAP` before interpreting fake-vs-real outputs; if the dataset mapping is reversed, edit the map and rerun this section.
+
+All outputs are report artifacts under `reports/tables/` and `reports/figures/`. These cells do not change the cleaned dataset or the train/validation/test split.
+
+----------------------------------------
+Cell 25 [code]:
+import re
+from pathlib import Path
+
+if 'PROJECT_ROOT' not in globals():
+    PROJECT_ROOT = Path('/content/drive/MyDrive/Fake_reviews')
+if 'PROCESSED_DIR' not in globals():
+    PROCESSED_DIR = PROJECT_ROOT / 'data' / 'processed'
+if 'REPORT_TABLE_DIR' not in globals():
+    REPORT_TABLE_DIR = PROJECT_ROOT / 'reports' / 'tables'
+if 'REPORT_FIGURE_DIR' not in globals():
+    REPORT_FIGURE_DIR = PROJECT_ROOT / 'reports' / 'figures'
+if 'SEED' not in globals():
+    SEED = 42
+
+for output_dir in [PROCESSED_DIR, REPORT_TABLE_DIR, REPORT_FIGURE_DIR]:
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+CLEAN_DATA_PATH = PROCESSED_DIR / 'clean_reviews.csv'
+SCHEMA_METADATA_PATH = PROCESSED_DIR / 'schema_metadata.json'
+SPLIT_METADATA_PATH = PROCESSED_DIR / 'split_metadata.json'
+ADVANCED_EDA_PREFIX = 'phase1_advanced'
+SAMPLE_PER_CLASS = 10
+TOP_TERMS = 30
+ENABLE_WORDCLOUD = False
+
+# Phase 1 normalization uses the common convention 1=fake and 0=real.
+# Confirm this mapping with the dataset documentation before interpreting plots.
+LABEL_NAME_MAP = {0: 'real', 1: 'fake'}
+FAKE_LABEL_VALUE = next(
+    (label for label, name in LABEL_NAME_MAP.items() if str(name).lower() == 'fake'),
+    1,
+)
+
+advanced_artifacts = []
+
+
+def record_advanced_artifact(requirement, artifact_type, path, status='generated', note=''):
+    advanced_artifacts.append({
+        'requirement': requirement,
+        'artifact_type': artifact_type,
+        'path': str(path),
+        'status': status,
+        'note': note,
+    })
+
+
+if 'schema_metadata' not in globals() and SCHEMA_METADATA_PATH.exists():
+    with open(SCHEMA_METADATA_PATH, 'r', encoding='utf-8') as f:
+        schema_metadata = json.load(f)
+elif 'schema_metadata' not in globals():
+    schema_metadata = {}
+
+if 'split_metadata' not in globals() and SPLIT_METADATA_PATH.exists():
+    with open(SPLIT_METADATA_PATH, 'r', encoding='utf-8') as f:
+        split_metadata = json.load(f)
+elif 'split_metadata' not in globals():
+    split_metadata = {}
+
+if 'clean_df' not in globals():
+    if not CLEAN_DATA_PATH.exists():
+        raise FileNotFoundError(f'Missing {CLEAN_DATA_PATH}. Run Phase 1 cells first.')
+    clean_df = pd.read_csv(CLEAN_DATA_PATH, low_memory=False)
+
+schema_columns = schema_metadata.get('columns', globals().get('schema', {}))
+TEXT_COL = schema_columns.get('text') or globals().get('TEXT_COL') or 'text'
+LABEL_BINARY_COL = schema_metadata.get('label_output_column') or 'label_binary'
+REVIEWER_ANALYSIS_COL = schema_columns.get('reviewer') or globals().get('REVIEWER_COL')
+PRODUCT_ANALYSIS_COL = schema_columns.get('product') or globals().get('PRODUCT_COL')
+RATING_ANALYSIS_COL = schema_columns.get('rating') or globals().get('RATING_COL')
+TIMESTAMP_ANALYSIS_COL = schema_columns.get('timestamp') or globals().get('TIMESTAMP_COL')
+
+if LABEL_BINARY_COL not in clean_df.columns:
+    fallback_labels = [col for col in ['label_binary', 'label'] if col in clean_df.columns]
+    if not fallback_labels:
+        raise ValueError('No binary label column found. Expected label_binary from Phase 1.')
+    LABEL_BINARY_COL = fallback_labels[0]
+if TEXT_COL not in clean_df.columns:
+    raise ValueError(f'Text column {TEXT_COL!r} is not present in clean_df.')
+
+clean_df[LABEL_BINARY_COL] = clean_df[LABEL_BINARY_COL].astype(int)
+clean_df['label_name'] = clean_df[LABEL_BINARY_COL].map(LABEL_NAME_MAP)
+clean_df['label_name'] = clean_df['label_name'].fillna(clean_df[LABEL_BINARY_COL].astype(str))
+clean_df['_is_fake'] = clean_df[LABEL_BINARY_COL].eq(FAKE_LABEL_VALUE).astype(int)
+
+label_confirmation_df = (
+    clean_df[[LABEL_BINARY_COL, 'label_name']]
+    .drop_duplicates()
+    .sort_values(LABEL_BINARY_COL)
+    .rename(columns={LABEL_BINARY_COL: 'label_value'})
+)
+label_confirmation_df['row_count'] = label_confirmation_df['label_value'].map(
+    clean_df[LABEL_BINARY_COL].value_counts().to_dict()
+)
+label_confirmation_df['confirm_before_interpretation'] = 'Edit LABEL_NAME_MAP if reversed'
+
+display(label_confirmation_df)
+print('Advanced EDA prefix:', ADVANCED_EDA_PREFIX)
+print('Clean data path:', CLEAN_DATA_PATH)
+print('Split metadata path:', SPLIT_METADATA_PATH)
+
+----------------------------------------
+Cell 26 [markdown]:
+### EDA-01 - Review Length Distribution by Label
+
+Compare character length and word count for fake vs real reviews.
+
+----------------------------------------
+Cell 27 [code]:
+if 'review_char_len' not in clean_df.columns:
+    clean_df['review_char_len'] = clean_df[TEXT_COL].fillna('').astype(str).str.len()
+if 'review_word_count' not in clean_df.columns:
+    clean_df['review_word_count'] = clean_df[TEXT_COL].fillna('').astype(str).str.split().str.len()
+
+length_by_label = (
+    clean_df
+    .groupby('label_name')
+    .agg(
+        review_count=(TEXT_COL, 'size'),
+        char_len_mean=('review_char_len', 'mean'),
+        char_len_median=('review_char_len', 'median'),
+        char_len_std=('review_char_len', 'std'),
+        word_count_mean=('review_word_count', 'mean'),
+        word_count_median=('review_word_count', 'median'),
+        word_count_std=('review_word_count', 'std'),
+    )
+    .reset_index()
+)
+length_by_label_path = REPORT_TABLE_DIR / 'phase1_length_by_label.csv'
+length_by_label.to_csv(length_by_label_path, index=False)
+record_advanced_artifact('EDA-01', 'table', length_by_label_path)
+display(length_by_label)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+sns.boxplot(data=clean_df, x='label_name', y='review_char_len', ax=ax)
+ax.set_title('Review character length by label')
+ax.set_xlabel('Label')
+ax.set_ylabel('Character length')
+plt.tight_layout()
+length_boxplot_path = REPORT_FIGURE_DIR / 'phase1_length_by_label_boxplot.png'
+plt.savefig(length_boxplot_path, dpi=160, bbox_inches='tight')
+plt.show()
+record_advanced_artifact('EDA-01', 'figure', length_boxplot_path)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+sns.boxplot(data=clean_df, x='label_name', y='review_word_count', ax=ax)
+ax.set_title('Review word count by label')
+ax.set_xlabel('Label')
+ax.set_ylabel('Word count')
+plt.tight_layout()
+word_count_boxplot_path = REPORT_FIGURE_DIR / 'phase1_word_count_by_label_boxplot.png'
+plt.savefig(word_count_boxplot_path, dpi=160, bbox_inches='tight')
+plt.show()
+record_advanced_artifact('EDA-01', 'figure', word_count_boxplot_path)
+
+----------------------------------------
+Cell 28 [markdown]:
+### EDA-02 and EDA-03 - Sample Reviews and Sentiment by Label
+
+Samples provide qualitative checks. Sentiment is exploratory evidence only and must not be treated as a standalone label.
+
+----------------------------------------
+Cell 29 [code]:
+sample_columns = [
+    col for col in [
+        'label_name', LABEL_BINARY_COL, TEXT_COL, RATING_ANALYSIS_COL,
+        PRODUCT_ANALYSIS_COL, REVIEWER_ANALYSIS_COL, TIMESTAMP_ANALYSIS_COL,
+    ]
+    if col is not None and col in clean_df.columns
+]
+sample_reviews_by_label = (
+    clean_df
+    .groupby('label_name', group_keys=False)
+    .apply(lambda group: group.sample(n=min(SAMPLE_PER_CLASS, len(group)), random_state=SEED))
+    .reset_index(drop=True)
+)
+sample_reviews_by_label = sample_reviews_by_label[sample_columns]
+sample_reviews_path = REPORT_TABLE_DIR / 'phase1_samples_by_label.csv'
+sample_reviews_by_label.to_csv(sample_reviews_path, index=False)
+record_advanced_artifact('EDA-02', 'table', sample_reviews_path, note='Contains raw review text.')
+display(sample_reviews_by_label)
+
+sentiment_backend = None
+sentiment_note = ''
+try:
+    from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+    vader_analyzer = SentimentIntensityAnalyzer()
+    sentiment_backend = 'vaderSentiment'
+except Exception as vader_import_error:
+    try:
+        import nltk
+        from nltk.sentiment import SentimentIntensityAnalyzer
+        try:
+            nltk.data.find('sentiment/vader_lexicon.zip')
+        except LookupError:
+            nltk.download('vader_lexicon', quiet=True)
+        vader_analyzer = SentimentIntensityAnalyzer()
+        sentiment_backend = 'nltk_vader'
+    except Exception as nltk_vader_error:
+        try:
+            from textblob import TextBlob
+            sentiment_backend = 'TextBlob'
+        except Exception as textblob_error:
+            sentiment_note = (
+                f'VADER unavailable: {vader_import_error}; '
+                f'NLTK VADER unavailable: {nltk_vader_error}; '
+                f'TextBlob unavailable: {textblob_error}'
+            )
+
+sentiment_frame = clean_df[['label_name', TEXT_COL]].copy()
+sentiment_frame['_review_text_for_sentiment'] = sentiment_frame[TEXT_COL].fillna('').astype(str)
+
+if sentiment_backend in {'vaderSentiment', 'nltk_vader'}:
+    vader_scores = sentiment_frame['_review_text_for_sentiment'].map(vader_analyzer.polarity_scores)
+    sentiment_frame['sentiment_compound'] = vader_scores.map(lambda score: score['compound'])
+    sentiment_frame['sentiment_positive'] = vader_scores.map(lambda score: score['pos'])
+    sentiment_frame['sentiment_neutral'] = vader_scores.map(lambda score: score['neu'])
+    sentiment_frame['sentiment_negative'] = vader_scores.map(lambda score: score['neg'])
+    sentiment_by_label = (
+        sentiment_frame.groupby('label_name')
+        .agg(
+            review_count=(TEXT_COL, 'size'),
+            sentiment_compound_mean=('sentiment_compound', 'mean'),
+            sentiment_compound_median=('sentiment_compound', 'median'),
+            sentiment_positive_mean=('sentiment_positive', 'mean'),
+            sentiment_neutral_mean=('sentiment_neutral', 'mean'),
+            sentiment_negative_mean=('sentiment_negative', 'mean'),
+        )
+        .reset_index()
+    )
+    plot_col = 'sentiment_compound_mean'
+elif sentiment_backend == 'TextBlob':
+    sentiment_frame['sentiment_polarity'] = sentiment_frame['_review_text_for_sentiment'].map(lambda text: TextBlob(text).sentiment.polarity)
+    sentiment_frame['sentiment_subjectivity'] = sentiment_frame['_review_text_for_sentiment'].map(lambda text: TextBlob(text).sentiment.subjectivity)
+    sentiment_by_label = (
+        sentiment_frame.groupby('label_name')
+        .agg(
+            review_count=(TEXT_COL, 'size'),
+            sentiment_polarity_mean=('sentiment_polarity', 'mean'),
+            sentiment_polarity_median=('sentiment_polarity', 'median'),
+            sentiment_subjectivity_mean=('sentiment_subjectivity', 'mean'),
+        )
+        .reset_index()
+    )
+    plot_col = 'sentiment_polarity_mean'
+else:
+    sentiment_by_label = pd.DataFrame([{
+        'label_name': 'skipped',
+        'review_count': 0,
+        'sentiment_backend': 'unavailable',
+        'note': sentiment_note,
+    }])
+    plot_col = None
+
+sentiment_by_label['sentiment_backend'] = sentiment_backend or 'unavailable'
+sentiment_path = REPORT_TABLE_DIR / 'phase1_sentiment_by_label.csv'
+sentiment_by_label.to_csv(sentiment_path, index=False)
+record_advanced_artifact('EDA-03', 'table', sentiment_path, status='generated' if sentiment_backend else 'skipped', note=sentiment_note)
+display(sentiment_by_label)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+if plot_col is not None:
+    sns.barplot(data=sentiment_by_label, x='label_name', y=plot_col, ax=ax)
+    ax.set_title(f'Sentiment by label ({sentiment_backend})')
+    ax.set_xlabel('Label')
+    ax.set_ylabel(plot_col)
+else:
+    ax.text(0.5, 0.5, 'Sentiment backend unavailable', ha='center', va='center')
+    ax.set_axis_off()
+plt.tight_layout()
+sentiment_figure_path = REPORT_FIGURE_DIR / 'phase1_sentiment_by_label.png'
+plt.savefig(sentiment_figure_path, dpi=160, bbox_inches='tight')
+plt.show()
+record_advanced_artifact('EDA-03', 'figure', sentiment_figure_path, status='generated' if sentiment_backend else 'skipped', note=sentiment_note)
+
+----------------------------------------
+Cell 30 [markdown]:
+### EDA-04 - Word Frequency, N-Grams, and Optional Word Cloud
+
+Lexical EDA surfaces class-specific terms. Vectorization is capped to reduce RAM use in Colab.
+
+----------------------------------------
+Cell 31 [code]:
+from sklearn.feature_extraction.text import CountVectorizer
+
+
+def get_top_ngrams_by_label(frame, text_col, label_col, ngram_range, top_n=30):
+    rows = []
+    ngram_size = ngram_range[0]
+    for label_name, group in frame.groupby(label_col):
+        texts = group[text_col].fillna('').astype(str)
+        try:
+            vectorizer = CountVectorizer(
+                stop_words='english',
+                lowercase=True,
+                min_df=2,
+                max_features=5000,  # max_features=5000 for RAM-bounded Colab EDA
+                ngram_range=ngram_range,
+            )
+            matrix = vectorizer.fit_transform(texts)
+            counts = np.asarray(matrix.sum(axis=0)).ravel()
+            terms = vectorizer.get_feature_names_out()
+        except ValueError as exc:
+            rows.append({
+                'label_name': label_name,
+                'ngram': '__skipped__',
+                'count': 0,
+                'ngram_size': ngram_size,
+                'rank': 1,
+                'note': str(exc),
+            })
+            continue
+        order = counts.argsort()[::-1][:top_n]
+        for rank, idx in enumerate(order, start=1):
+            rows.append({
+                'label_name': label_name,
+                'ngram': terms[idx],
+                'count': int(counts[idx]),
+                'ngram_size': ngram_size,
+                'rank': rank,
+                'note': '',
+            })
+    return pd.DataFrame(rows)
+
+
+top_term_frames = [
+    get_top_ngrams_by_label(clean_df, TEXT_COL, 'label_name', (1, 1), TOP_TERMS),
+    get_top_ngrams_by_label(clean_df, TEXT_COL, 'label_name', (2, 2), TOP_TERMS),
+    get_top_ngrams_by_label(clean_df, TEXT_COL, 'label_name', (3, 3), TOP_TERMS),
+]
+top_terms_by_label = pd.concat(top_term_frames, ignore_index=True)
+top_terms_path = REPORT_TABLE_DIR / 'phase1_top_terms_by_label.csv'
+top_terms_by_label.to_csv(top_terms_path, index=False)
+record_advanced_artifact('EDA-04', 'table', top_terms_path)
+display(top_terms_by_label.head(30))
+
+plot_terms = (
+    top_terms_by_label[top_terms_by_label['ngram'] != '__skipped__']
+    .sort_values(['label_name', 'ngram_size', 'rank'])
+    .groupby(['label_name', 'ngram_size'], group_keys=False)
+    .head(10)
+)
+if len(plot_terms) > 0:
+    g = sns.catplot(
+        data=plot_terms,
+        kind='bar',
+        x='count',
+        y='ngram',
+        col='label_name',
+        row='ngram_size',
+        sharey=False,
+        height=3.3,
+        aspect=1.4,
+    )
+    g.set_titles('label={col_name}, n={row_name}')
+    g.set_axis_labels('Count', 'Term')
+    top_terms_figure_path = REPORT_FIGURE_DIR / 'phase1_top_terms_by_label.png'
+    plt.tight_layout()
+    plt.savefig(top_terms_figure_path, dpi=160, bbox_inches='tight')
+    plt.show()
+else:
+    fig, ax = plt.subplots(figsize=(8, 4))
+    ax.text(0.5, 0.5, 'No n-gram terms available', ha='center', va='center')
+    ax.set_axis_off()
+    top_terms_figure_path = REPORT_FIGURE_DIR / 'phase1_top_terms_by_label.png'
+    plt.savefig(top_terms_figure_path, dpi=160, bbox_inches='tight')
+    plt.show()
+record_advanced_artifact('EDA-04', 'figure', top_terms_figure_path)
+
+wordcloud_status = 'skipped'
+wordcloud_note = 'ENABLE_WORDCLOUD is False by default.'
+if ENABLE_WORDCLOUD:
+    try:
+        from wordcloud import STOPWORDS, WordCloud
+        for label_name, group in clean_df.groupby('label_name'):
+            text_blob = ' '.join(group[TEXT_COL].fillna('').astype(str).tolist())
+            wordcloud = WordCloud(
+                width=1200,
+                height=700,
+                background_color='white',
+                stopwords=STOPWORDS,
+                max_words=150,
+            ).generate(text_blob)
+            safe_label = re.sub(r'[^a-zA-Z0-9_]+', '_', str(label_name).lower()).strip('_')
+            wordcloud_path = REPORT_FIGURE_DIR / f'phase1_wordcloud_{safe_label}.png'
+            fig, ax = plt.subplots(figsize=(10, 6))
+            ax.imshow(wordcloud, interpolation='bilinear')
+            ax.set_axis_off()
+            ax.set_title(f'Word cloud - {label_name}')
+            plt.tight_layout()
+            plt.savefig(wordcloud_path, dpi=160, bbox_inches='tight')
+            plt.show()
+            record_advanced_artifact('EDA-04', 'figure', wordcloud_path)
+        wordcloud_status = 'generated'
+        wordcloud_note = ''
+    except Exception as exc:
+        wordcloud_note = f'WordCloud unavailable or failed: {exc}'
+        print(wordcloud_note)
+else:
+    print(wordcloud_note)
+record_advanced_artifact(
+    'EDA-04',
+    'optional_figure',
+    REPORT_FIGURE_DIR / 'phase1_wordcloud_<label_name>.png',
+    status=wordcloud_status,
+    note=wordcloud_note,
+)
+
+----------------------------------------
+Cell 32 [markdown]:
+### EDA-05 to EDA-08 - Temporal, Burst, Rating, and Product-Level Analysis
+
+These analyses inspect behavioral patterns that can guide Phase 2 features. They are EDA only; downstream train-time aggregates must avoid leakage.
+
+----------------------------------------
+Cell 33 [code]:
+def parse_review_datetime(series):
+    numeric = pd.to_numeric(series, errors='coerce')
+    if numeric.notna().mean() > 0.9:
+        median_value = numeric.dropna().median()
+        if median_value > 1e12:
+            return pd.to_datetime(numeric, unit='ms', errors='coerce')
+        if median_value > 1e9:
+            return pd.to_datetime(numeric, unit='s', errors='coerce')
+    return pd.to_datetime(series, errors='coerce')
+
+
+temporal_available = TIMESTAMP_ANALYSIS_COL is not None and TIMESTAMP_ANALYSIS_COL in clean_df.columns
+if temporal_available:
+    temporal_df = clean_df.copy()
+    temporal_df['_review_datetime'] = parse_review_datetime(temporal_df[TIMESTAMP_ANALYSIS_COL])
+    parse_rate = temporal_df['_review_datetime'].notna().mean()
+    temporal_valid = temporal_df.dropna(subset=['_review_datetime']).copy()
+else:
+    parse_rate = 0.0
+    temporal_valid = pd.DataFrame()
+
+if temporal_available and parse_rate > 0:
+    temporal_valid['_date'] = temporal_valid['_review_datetime'].dt.date
+    temporal_valid['_week'] = temporal_valid['_review_datetime'].dt.to_period('W').astype(str)
+    temporal_valid['_day_of_week'] = temporal_valid['_review_datetime'].dt.day_name()
+    temporal_valid['_hour'] = temporal_valid['_review_datetime'].dt.hour
+
+    date_stats = temporal_valid.groupby('_date').agg(review_count=(TEXT_COL, 'size'), fake_count=('_is_fake', 'sum')).reset_index().rename(columns={'_date': 'period'})
+    week_stats = temporal_valid.groupby('_week').agg(review_count=(TEXT_COL, 'size'), fake_count=('_is_fake', 'sum')).reset_index().rename(columns={'_week': 'period'})
+    day_stats = temporal_valid.groupby('_day_of_week').agg(review_count=(TEXT_COL, 'size'), fake_count=('_is_fake', 'sum')).reset_index().rename(columns={'_day_of_week': 'period'})
+    hour_stats = temporal_valid.groupby('_hour').agg(review_count=(TEXT_COL, 'size'), fake_count=('_is_fake', 'sum')).reset_index().rename(columns={'_hour': 'period'})
+    for frame, period_type in [(date_stats, 'date'), (week_stats, 'week'), (day_stats, 'day_of_week'), (hour_stats, 'hour')]:
+        frame['fake_rate'] = frame['fake_count'] / frame['review_count']
+        frame['period_type'] = period_type
+    temporal_stats = pd.concat([date_stats, week_stats, day_stats, hour_stats], ignore_index=True)
+    temporal_stats['timestamp_column'] = TIMESTAMP_ANALYSIS_COL
+    temporal_stats['parse_rate'] = parse_rate
+    temporal_status = 'generated'
+    temporal_note = ''
+else:
+    temporal_stats = pd.DataFrame([{
+        'period_type': 'skipped',
+        'period': '',
+        'review_count': 0,
+        'fake_count': 0,
+        'fake_rate': np.nan,
+        'timestamp_column': TIMESTAMP_ANALYSIS_COL,
+        'parse_rate': parse_rate,
+        'note': 'Timestamp column missing or could not be parsed.',
+    }])
+    temporal_status = 'skipped'
+    temporal_note = 'Timestamp column missing or could not be parsed.'
+
+temporal_stats_path = REPORT_TABLE_DIR / 'phase1_temporal_stats.csv'
+temporal_stats.to_csv(temporal_stats_path, index=False)
+record_advanced_artifact('EDA-05', 'table', temporal_stats_path, status=temporal_status, note=temporal_note)
+display(temporal_stats.head(20))
+
+if temporal_status == 'generated':
+    date_plot = date_stats.copy()
+    date_plot['period'] = pd.to_datetime(date_plot['period'])
+    fig, ax = plt.subplots(figsize=(11, 5))
+    sns.lineplot(data=date_plot, x='period', y='review_count', ax=ax)
+    ax.set_title('Review volume over time')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Review count')
+    plt.tight_layout()
+    review_volume_path = REPORT_FIGURE_DIR / 'phase1_review_volume_over_time.png'
+    plt.savefig(review_volume_path, dpi=160, bbox_inches='tight')
+    plt.show()
+    record_advanced_artifact('EDA-05', 'figure', review_volume_path)
+
+    fig, ax = plt.subplots(figsize=(11, 5))
+    sns.lineplot(data=week_stats, x='period', y='fake_rate', ax=ax)
+    ax.set_title('Fake rate by week')
+    ax.set_xlabel('Week')
+    ax.set_ylabel('Fake rate')
+    ax.tick_params(axis='x', rotation=90)
+    plt.tight_layout()
+    fake_rate_time_path = REPORT_FIGURE_DIR / 'phase1_fake_rate_by_time.png'
+    plt.savefig(fake_rate_time_path, dpi=160, bbox_inches='tight')
+    plt.show()
+    record_advanced_artifact('EDA-05', 'figure', fake_rate_time_path)
+
+    fig, ax = plt.subplots(figsize=(9, 5))
+    sns.barplot(data=hour_stats, x='period', y='fake_rate', ax=ax)
+    ax.set_title('Fake rate by hour')
+    ax.set_xlabel('Hour')
+    ax.set_ylabel('Fake rate')
+    plt.tight_layout()
+    fake_rate_hour_path = REPORT_FIGURE_DIR / 'phase1_fake_rate_by_hour.png'
+    plt.savefig(fake_rate_hour_path, dpi=160, bbox_inches='tight')
+    plt.show()
+    record_advanced_artifact('EDA-05', 'figure', fake_rate_hour_path)
+else:
+    for fig_name in ['phase1_review_volume_over_time.png', 'phase1_fake_rate_by_time.png', 'phase1_fake_rate_by_hour.png']:
+        record_advanced_artifact('EDA-05', 'figure', REPORT_FIGURE_DIR / fig_name, status='skipped', note=temporal_note)
+
+burst_available = (
+    temporal_status == 'generated'
+    and REVIEWER_ANALYSIS_COL is not None
+    and REVIEWER_ANALYSIS_COL in temporal_valid.columns
+)
+if burst_available:
+    daily_burst = temporal_valid.groupby([REVIEWER_ANALYSIS_COL, '_date']).agg(daily_reviews=(TEXT_COL, 'size'), daily_fake_count=('_is_fake', 'sum')).reset_index()
+    weekly_burst = temporal_valid.groupby([REVIEWER_ANALYSIS_COL, '_week']).agg(weekly_reviews=(TEXT_COL, 'size')).reset_index()
+    user_burst_stats = daily_burst.groupby(REVIEWER_ANALYSIS_COL).agg(
+        active_days=('_date', 'nunique'),
+        max_daily_reviews=('daily_reviews', 'max'),
+        mean_daily_reviews=('daily_reviews', 'mean'),
+        burst_fake_count=('daily_fake_count', 'sum'),
+    ).reset_index()
+    weekly_max = weekly_burst.groupby(REVIEWER_ANALYSIS_COL)['weekly_reviews'].max().rename('max_weekly_reviews')
+    totals = clean_df.groupby(REVIEWER_ANALYSIS_COL).agg(total_reviews=(TEXT_COL, 'size'), total_fake_count=('_is_fake', 'sum')).reset_index()
+    user_burst_stats = user_burst_stats.merge(weekly_max, on=REVIEWER_ANALYSIS_COL, how='left').merge(totals, on=REVIEWER_ANALYSIS_COL, how='left')
+    user_burst_stats['fake_rate'] = user_burst_stats['total_fake_count'] / user_burst_stats['total_reviews']
+    user_burst_stats = user_burst_stats.sort_values(['max_daily_reviews', 'total_reviews'], ascending=False)
+    burst_status = 'generated'
+    burst_note = ''
+else:
+    user_burst_stats = pd.DataFrame([{
+        'reviewer_column': REVIEWER_ANALYSIS_COL,
+        'status': 'skipped',
+        'note': 'Reviewer or timestamp column missing, or timestamp analysis was skipped.',
+    }])
+    burst_status = 'skipped'
+    burst_note = 'Reviewer or timestamp column missing, or timestamp analysis was skipped.'
+
+user_burst_path = REPORT_TABLE_DIR / 'phase1_user_burst_stats.csv'
+user_burst_stats.to_csv(user_burst_path, index=False)
+record_advanced_artifact('EDA-06', 'table', user_burst_path, status=burst_status, note=burst_note)
+display(user_burst_stats.head(20))
+
+----------------------------------------
+Cell 34 [code]:
+rating_available = RATING_ANALYSIS_COL is not None and RATING_ANALYSIS_COL in clean_df.columns
+if rating_available:
+    rating_df = clean_df.copy()
+    rating_df['_rating_numeric'] = pd.to_numeric(rating_df[RATING_ANALYSIS_COL], errors='coerce')
+    rating_df = rating_df.dropna(subset=['_rating_numeric']).copy()
+
+    rating_dist = rating_df.groupby(['label_name', '_rating_numeric']).agg(review_count=(TEXT_COL, 'size'), fake_count=('_is_fake', 'sum')).reset_index()
+    rating_dist['fake_rate'] = rating_dist['fake_count'] / rating_dist['review_count']
+    rating_dist['stat_type'] = 'rating_distribution_by_label'
+    fake_rate_by_rating = rating_df.groupby('_rating_numeric').agg(review_count=(TEXT_COL, 'size'), fake_count=('_is_fake', 'sum')).reset_index()
+    fake_rate_by_rating['fake_rate'] = fake_rate_by_rating['fake_count'] / fake_rate_by_rating['review_count']
+    fake_rate_by_rating['label_name'] = 'all'
+    fake_rate_by_rating['stat_type'] = 'fake_rate_by_rating'
+    rating_summary = rating_df.groupby('label_name')['_rating_numeric'].describe().reset_index()
+    rating_summary['stat_type'] = 'rating_summary_by_label'
+    min_rating = rating_df['_rating_numeric'].min()
+    max_rating = rating_df['_rating_numeric'].max()
+    extreme_rating_stats = rating_df[rating_df['_rating_numeric'].isin([min_rating, max_rating])].groupby(['label_name', '_rating_numeric']).agg(review_count=(TEXT_COL, 'size'), fake_count=('_is_fake', 'sum')).reset_index()
+    extreme_rating_stats['fake_rate'] = extreme_rating_stats['fake_count'] / extreme_rating_stats['review_count']
+    extreme_rating_stats['stat_type'] = 'extreme_rating_stats'
+    rating_label_stats = pd.concat([rating_dist, fake_rate_by_rating, extreme_rating_stats, rating_summary], ignore_index=True, sort=False)
+    rating_status = 'generated'
+    rating_note = ''
+else:
+    rating_label_stats = pd.DataFrame([{'stat_type': 'skipped', 'rating_column': RATING_ANALYSIS_COL, 'note': 'Rating column missing.'}])
+    rating_status = 'skipped'
+    rating_note = 'Rating column missing.'
+
+rating_stats_path = REPORT_TABLE_DIR / 'phase1_rating_label_stats.csv'
+rating_label_stats.to_csv(rating_stats_path, index=False)
+record_advanced_artifact('EDA-07', 'table', rating_stats_path, status=rating_status, note=rating_note)
+display(rating_label_stats.head(20))
+
+if rating_status == 'generated':
+    fig, ax = plt.subplots(figsize=(9, 5))
+    sns.countplot(data=rating_df, x='_rating_numeric', hue='label_name', ax=ax)
+    ax.set_title('Rating distribution by label')
+    ax.set_xlabel('Rating')
+    ax.set_ylabel('Review count')
+    plt.tight_layout()
+    rating_vs_label_path = REPORT_FIGURE_DIR / 'phase1_rating_vs_label.png'
+    plt.savefig(rating_vs_label_path, dpi=160, bbox_inches='tight')
+    plt.show()
+    record_advanced_artifact('EDA-07', 'figure', rating_vs_label_path)
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    sns.barplot(data=fake_rate_by_rating, x='_rating_numeric', y='fake_rate', ax=ax)
+    ax.set_title('Fake rate by rating')
+    ax.set_xlabel('Rating')
+    ax.set_ylabel('Fake rate')
+    plt.tight_layout()
+    fake_rate_rating_path = REPORT_FIGURE_DIR / 'phase1_fake_rate_by_rating.png'
+    plt.savefig(fake_rate_rating_path, dpi=160, bbox_inches='tight')
+    plt.show()
+    record_advanced_artifact('EDA-07', 'figure', fake_rate_rating_path)
+else:
+    for fig_name in ['phase1_rating_vs_label.png', 'phase1_fake_rate_by_rating.png']:
+        record_advanced_artifact('EDA-07', 'figure', REPORT_FIGURE_DIR / fig_name, status='skipped', note=rating_note)
+
+----------------------------------------
+Cell 35 [code]:
+product_available = PRODUCT_ANALYSIS_COL is not None and PRODUCT_ANALYSIS_COL in clean_df.columns
+if product_available:
+    product_fake_rate = clean_df.groupby(PRODUCT_ANALYSIS_COL).agg(review_count=(TEXT_COL, 'size'), fake_count=('_is_fake', 'sum')).reset_index()
+    product_fake_rate['real_count'] = product_fake_rate['review_count'] - product_fake_rate['fake_count']
+    product_fake_rate['fake_rate'] = product_fake_rate['fake_count'] / product_fake_rate['review_count']
+    product_fake_rate = product_fake_rate.sort_values(['review_count', 'fake_rate'], ascending=False)
+    product_status = 'generated'
+    product_note = ''
+else:
+    product_fake_rate = pd.DataFrame([{'product_column': PRODUCT_ANALYSIS_COL, 'status': 'skipped', 'note': 'Product column missing.'}])
+    product_status = 'skipped'
+    product_note = 'Product column missing.'
+
+product_fake_rate_path = REPORT_TABLE_DIR / 'phase1_product_fake_rate.csv'
+product_fake_rate.to_csv(product_fake_rate_path, index=False)
+record_advanced_artifact('EDA-08', 'table', product_fake_rate_path, status=product_status, note=product_note)
+display(product_fake_rate.head(20))
+
+if product_status == 'generated':
+    top_products = product_fake_rate[product_fake_rate['review_count'] >= 3].head(20)
+    if len(top_products) == 0:
+        top_products = product_fake_rate.head(20)
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.barplot(data=top_products, x='fake_rate', y=PRODUCT_ANALYSIS_COL, ax=ax)
+    ax.set_title('Top product fake rates among frequent products')
+    ax.set_xlabel('Fake rate')
+    ax.set_ylabel('Product')
+    plt.tight_layout()
+    top_product_fake_rate_path = REPORT_FIGURE_DIR / 'phase1_top_product_fake_rate.png'
+    plt.savefig(top_product_fake_rate_path, dpi=160, bbox_inches='tight')
+    plt.show()
+    record_advanced_artifact('EDA-08', 'figure', top_product_fake_rate_path)
+else:
+    record_advanced_artifact('EDA-08', 'figure', REPORT_FIGURE_DIR / 'phase1_top_product_fake_rate.png', status='skipped', note=product_note)
+
+category_candidates = ['category', 'main_category', 'product_category', 'categories', 'department', 'store', 'brand_category', 'category_name']
+category_analysis_col = next((col for col in category_candidates if col in clean_df.columns and col not in {TEXT_COL, LABEL_BINARY_COL, PRODUCT_ANALYSIS_COL}), None)
+if category_analysis_col is not None:
+    category_fake_rate = clean_df.groupby(category_analysis_col).agg(review_count=(TEXT_COL, 'size'), fake_count=('_is_fake', 'sum')).reset_index()
+    category_fake_rate['real_count'] = category_fake_rate['review_count'] - category_fake_rate['fake_count']
+    category_fake_rate['fake_rate'] = category_fake_rate['fake_count'] / category_fake_rate['review_count']
+    category_fake_rate = category_fake_rate.sort_values(['review_count', 'fake_rate'], ascending=False)
+    category_status = 'generated'
+    category_note = ''
+else:
+    category_fake_rate = pd.DataFrame([{'category_column': category_analysis_col, 'status': 'skipped', 'note': 'No category-like column found.'}])
+    category_status = 'skipped'
+    category_note = 'No category-like column found.'
+
+category_fake_rate_path = REPORT_TABLE_DIR / 'phase1_category_fake_rate.csv'
+category_fake_rate.to_csv(category_fake_rate_path, index=False)
+record_advanced_artifact('EDA-08', 'table', category_fake_rate_path, status=category_status, note=category_note)
+display(category_fake_rate.head(20))
+
+if category_status == 'generated':
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.barplot(data=category_fake_rate.head(20), x='fake_rate', y=category_analysis_col, ax=ax)
+    ax.set_title('Category fake rate')
+    ax.set_xlabel('Fake rate')
+    ax.set_ylabel('Category')
+    plt.tight_layout()
+    category_fake_rate_figure_path = REPORT_FIGURE_DIR / 'phase1_category_fake_rate.png'
+    plt.savefig(category_fake_rate_figure_path, dpi=160, bbox_inches='tight')
+    plt.show()
+    record_advanced_artifact('EDA-08', 'figure', category_fake_rate_figure_path)
+else:
+    record_advanced_artifact('EDA-08', 'figure', REPORT_FIGURE_DIR / 'phase1_category_fake_rate.png', status='skipped', note=category_note)
+
+expected_advanced_artifacts = [
+    ('EDA-01', 'reports/tables/phase1_length_by_label.csv'),
+    ('EDA-01', 'reports/figures/phase1_length_by_label_boxplot.png'),
+    ('EDA-01', 'reports/figures/phase1_word_count_by_label_boxplot.png'),
+    ('EDA-02', 'reports/tables/phase1_samples_by_label.csv'),
+    ('EDA-03', 'reports/tables/phase1_sentiment_by_label.csv'),
+    ('EDA-03', 'reports/figures/phase1_sentiment_by_label.png'),
+    ('EDA-04', 'reports/tables/phase1_top_terms_by_label.csv'),
+    ('EDA-04', 'reports/figures/phase1_top_terms_by_label.png'),
+    ('EDA-04', 'reports/figures/phase1_wordcloud_<label_name>.png'),
+    ('EDA-05', 'reports/tables/phase1_temporal_stats.csv'),
+    ('EDA-05', 'reports/figures/phase1_review_volume_over_time.png'),
+    ('EDA-05', 'reports/figures/phase1_fake_rate_by_time.png'),
+    ('EDA-05', 'reports/figures/phase1_fake_rate_by_hour.png'),
+    ('EDA-06', 'reports/tables/phase1_user_burst_stats.csv'),
+    ('EDA-07', 'reports/tables/phase1_rating_label_stats.csv'),
+    ('EDA-07', 'reports/figures/phase1_rating_vs_label.png'),
+    ('EDA-07', 'reports/figures/phase1_fake_rate_by_rating.png'),
+    ('EDA-08', 'reports/tables/phase1_product_fake_rate.csv'),
+    ('EDA-08', 'reports/figures/phase1_top_product_fake_rate.png'),
+    ('EDA-08', 'reports/tables/phase1_category_fake_rate.csv'),
+    ('EDA-08', 'reports/figures/phase1_category_fake_rate.png'),
+]
+
+summary_df = pd.DataFrame(advanced_artifacts)
+if len(summary_df) == 0:
+    summary_df = pd.DataFrame(columns=['requirement', 'artifact_type', 'path', 'status', 'note'])
+recorded_paths = set(summary_df['path'].astype(str)) if 'path' in summary_df.columns else set()
+missing_rows = []
+for requirement, relative_path in expected_advanced_artifacts:
+    absolute_path = str(PROJECT_ROOT / relative_path)
+    placeholder_path = str(REPORT_FIGURE_DIR / 'phase1_wordcloud_<label_name>.png')
+    if absolute_path not in recorded_paths and placeholder_path not in recorded_paths:
+        missing_rows.append({
+            'requirement': requirement,
+            'artifact_type': 'expected_artifact',
+            'path': absolute_path,
+            'status': 'not_recorded',
+            'note': 'Expected artifact was not recorded by earlier cells.',
+        })
+if missing_rows:
+    summary_df = pd.concat([summary_df, pd.DataFrame(missing_rows)], ignore_index=True)
+summary_df['generated_at_utc'] = datetime.now(timezone.utc).isoformat()
+summary_df['label_name_map'] = json.dumps(LABEL_NAME_MAP, ensure_ascii=False)
+summary_df['clean_rows'] = int(len(clean_df))
+
+advanced_summary_path = REPORT_TABLE_DIR / 'phase1_advanced_eda_summary.csv'
+summary_df.to_csv(advanced_summary_path, index=False)
+display(summary_df)
+print('Saved advanced EDA summary:', advanced_summary_path)
+
+----------------------------------------
+Cell 36 [markdown]:
+## Phase 1.1 Completion Checklist
+
+- **EDA-01:** Review length distribution by label for character length and word count.
+- **EDA-02:** Sample reviews by fake/real class for qualitative inspection.
+- **EDA-03:** Sentiment distribution by label using VADER or TextBlob fallback.
+- **EDA-04:** Word frequency, unigram/bigram/trigram tables, and optional word cloud by class.
+- **EDA-05:** Temporal review volume and fake-rate analysis by date/week/day/hour when timestamp is available.
+- **EDA-06:** User burst analysis when reviewer and timestamp columns are available.
+- **EDA-07:** Rating-vs-label and extreme-rating analysis when rating is available.
+- **EDA-08:** Product-level fake-rate stats and category-level stats when category exists.
+
+Expected Phase 1.1 output files:
+
+- `reports/tables/phase1_length_by_label.csv`
+- `reports/tables/phase1_samples_by_label.csv`
+- `reports/tables/phase1_sentiment_by_label.csv`
+- `reports/tables/phase1_top_terms_by_label.csv`
+- `reports/tables/phase1_temporal_stats.csv`
+- `reports/tables/phase1_user_burst_stats.csv`
+- `reports/tables/phase1_rating_label_stats.csv`
+- `reports/tables/phase1_product_fake_rate.csv`
+- `reports/tables/phase1_category_fake_rate.csv`
+- `reports/tables/phase1_advanced_eda_summary.csv`
+- `reports/figures/phase1_length_by_label_boxplot.png`
+- `reports/figures/phase1_word_count_by_label_boxplot.png`
+- `reports/figures/phase1_sentiment_by_label.png`
+- `reports/figures/phase1_top_terms_by_label.png`
+- `reports/figures/phase1_review_volume_over_time.png`
+- `reports/figures/phase1_fake_rate_by_time.png`
+- `reports/figures/phase1_fake_rate_by_hour.png`
+- `reports/figures/phase1_rating_vs_label.png`
+- `reports/figures/phase1_fake_rate_by_rating.png`
+- `reports/figures/phase1_top_product_fake_rate.png`
+- `reports/figures/phase1_category_fake_rate.png`
+
+----------------------------------------

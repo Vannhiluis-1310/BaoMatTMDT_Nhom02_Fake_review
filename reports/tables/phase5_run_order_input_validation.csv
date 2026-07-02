@@ -1,0 +1,4 @@
+generated_at_utc,split,feature_path,label_path,rows,feature_dim,label_rows,status
+2026-06-09T17:00:26.850229+00:00,train,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_train.npy,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_train.npy,29923,777,29923,pass
+2026-06-09T17:00:27.572000+00:00,val,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_val.npy,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_val.npy,6413,777,6413,pass
+2026-06-09T17:00:28.401581+00:00,test,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_test.npy,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_test.npy,6413,777,6413,pass

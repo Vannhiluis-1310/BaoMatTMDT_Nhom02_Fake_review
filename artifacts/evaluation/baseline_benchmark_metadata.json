@@ -1,0 +1,15 @@
+{
+  "generated_at_utc": "2026-06-25T07:34:39.438432+00:00",
+  "seed": 42,
+  "tier1_model_count": 6,
+  "sklearn_models": [
+    "sklearn_logistic_regression",
+    "sklearn_linear_svc",
+    "sklearn_random_forest"
+  ],
+  "artifact_models": [
+    "phase5_xgb_raw",
+    "phase5_cnn_bilstm_sequence",
+    "phase5_weighted_blend"
+  ]
+}

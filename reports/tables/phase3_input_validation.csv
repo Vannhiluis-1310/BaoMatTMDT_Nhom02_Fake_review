@@ -1,0 +1,4 @@
+split,feature_rows,feature_dim,feature_dtype,label_rows,label_dtype,expected_rows,expected_dim,status,issues
+train,29923,777,float32,29923,int64,29923,777,pass,
+val,6413,777,float32,6413,int64,6413,777,pass,
+test,6413,777,float32,6413,int64,6413,777,pass,

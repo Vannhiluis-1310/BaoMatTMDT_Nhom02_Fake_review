@@ -1,0 +1,9 @@
+order,notebook,phase,purpose,required_input,main_output,run_location
+1,01_EDA_Preprocessing.ipynb,Phase 1,"EDA, cleaning and stratified split",data/final_labeled_fake_reviews.csv,data/processed/,Google Colab
+2,02_Feature_Engineering.ipynb,Phase 2,ModernBERT embeddings and 9 behavioral features,data/processed/,artifacts/features/,Google Colab
+3,03_PCA_Feature_Selection.ipynb,Phase 3,PCA/SVD diagnostic and RAM report,artifacts/features/,artifacts/pca/,Google Colab
+4,04_PSO_Model_Training.ipynb,Phase 4,Legacy PSO/PCA CNN-BiLSTM ablation,artifacts/pca/,artifacts/models/ and artifacts/predictions/,Google Colab
+5,05_00-05_06 + 05_Hybrid_Ensemble.ipynb,Phase 5,"Model zoo: LGBM raw, XGB raw, MLP raw, sequence DL, blending, stacking",artifacts/features/ and artifacts/predictions/,artifacts/ensemble/ and reports/tables/phase5_*,Google Colab
+6,06_Adversarial_XAI.ipynb,Phase 6,"FGSM/PGD robustness, SHAP and LIME",artifacts/ensemble/,artifacts/xai/ and reports/tables/phase6_*,Google Colab
+7,07_Evaluation_Ablation.ipynb,Phase 7,"Metrics, target audit, CV, ablation and error analysis",Phase 2-6 artifacts,reports/tables/phase7_*,Google Colab
+8,08_Final_Report_Kaggle.ipynb,Phase 8,Final report and package manifests,Phase 1-7 artifacts,reports/final/,Google Colab

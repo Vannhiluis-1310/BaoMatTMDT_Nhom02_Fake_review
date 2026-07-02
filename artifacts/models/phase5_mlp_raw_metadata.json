@@ -1,0 +1,20 @@
+{
+  "model_variant": "phase5_mlp_raw",
+  "input_source": "phase2_raw_777",
+  "model_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/phase5_mlp_raw.pth",
+  "metrics_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase5_mlp_raw_metrics.csv",
+  "train_seconds": 55.662,
+  "config": {
+    "hidden": [
+      512,
+      256,
+      96
+    ],
+    "dropout": 0.25,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "batch_size": 128,
+    "max_epochs": 35,
+    "patience": 6
+  }
+}

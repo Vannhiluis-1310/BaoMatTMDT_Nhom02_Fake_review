@@ -1,0 +1,184 @@
+{
+  "generated_at_utc": "2026-06-11T12:32:18.226833+00:00",
+  "seed": 42,
+  "project_root": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews",
+  "target_metrics": {
+    "macro_f1": 0.89,
+    "precision_fake": 0.975,
+    "roc_auc": 0.93
+  },
+  "thresholds": {
+    "default_threshold": 0.5,
+    "phase5_selected_threshold": 0.6,
+    "phase5_selected_candidate_name": "phase5_weighted_blend",
+    "phase5_selected_candidate_config": {
+      "type": "weighted_blend",
+      "balanced_threshold": 0.3,
+      "precision_threshold": 0.6,
+      "weights": {
+        "phase5_cnn_bilstm_sequence": 0.5,
+        "phase5_xgb_raw": 0.5
+      }
+    }
+  },
+  "source_artifacts": {
+    "phase2_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/feature_metadata.json",
+    "phase3_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/phase3_metadata.json",
+    "phase4_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/phase4_metadata.json",
+    "phase5_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/phase5_metadata.json",
+    "phase6_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_metadata.json",
+    "phase6_final_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_metadata.json",
+    "pca_features": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_train.npy",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_val.npy",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_test.npy"
+    },
+    "raw_features": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_train.npy",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_val.npy",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_test.npy"
+    },
+    "probabilities": {
+      "dl_baseline": {
+        "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/dl_baseline_train_prob.npy",
+        "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/dl_baseline_val_prob.npy",
+        "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/dl_baseline_test_prob.npy"
+      },
+      "dl_pso": {
+        "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/dl_pso_train_prob.npy",
+        "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/dl_pso_val_prob.npy",
+        "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/dl_pso_test_prob.npy"
+      },
+      "xgboost": {
+        "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/xgboost_train_prob.npy",
+        "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/xgboost_val_prob.npy",
+        "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/xgboost_test_prob.npy"
+      },
+      "lightgbm": {
+        "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/lightgbm_train_prob.npy",
+        "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/lightgbm_val_prob.npy",
+        "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/lightgbm_test_prob.npy"
+      },
+      "stacking": {
+        "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/stacking_train_prob.npy",
+        "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/stacking_val_prob.npy",
+        "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/stacking_test_prob.npy"
+      },
+      "phase5_weighted_blend": {
+        "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_weighted_blend_train_prob.npy",
+        "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_weighted_blend_val_prob.npy",
+        "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_weighted_blend_test_prob.npy"
+      },
+      "phase5_xgb_raw": {
+        "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_xgb_raw_train_prob.npy",
+        "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_xgb_raw_val_prob.npy",
+        "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_xgb_raw_test_prob.npy"
+      },
+      "phase5_lgbm_raw": {
+        "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_lgbm_raw_train_prob.npy",
+        "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_lgbm_raw_val_prob.npy",
+        "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_lgbm_raw_test_prob.npy"
+      },
+      "phase5_mlp_raw": {
+        "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_mlp_raw_train_prob.npy",
+        "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_mlp_raw_val_prob.npy",
+        "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_mlp_raw_test_prob.npy"
+      },
+      "phase5_cnn_bilstm_sequence": {
+        "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_cnn_bilstm_sequence_train_prob.npy",
+        "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_cnn_bilstm_sequence_val_prob.npy",
+        "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_cnn_bilstm_sequence_test_prob.npy"
+      }
+    }
+  },
+  "cv": {
+    "folds": 5,
+    "cv_max_rows": null,
+    "cv_mode": "full_5fold_cv",
+    "cv_reason": "full train+val PCA features fit within configured resource policy",
+    "run_lightgbm": true,
+    "run_logistic_baseline": false
+  },
+  "controlled_ablation": {
+    "run_controlled_ablation": true,
+    "controlled_ablation_max_rows": null,
+    "controlled_reduced_dim": 400,
+    "memory_limit_mb": 2500
+  },
+  "ablation_evidence_map": [
+    {
+      "ablation_variant": "Full Model",
+      "removed_component": "none",
+      "model_variant": "phase5_weighted_blend",
+      "evidence_type": "direct_artifact",
+      "notes": "Headline phase5_weighted_blend; dual-threshold audit is exported separately."
+    },
+    {
+      "ablation_variant": "Model A",
+      "removed_component": "cnn_sequence_branch",
+      "model_variant": "phase5_xgb_raw",
+      "evidence_type": "direct_artifact_branch_level",
+      "notes": "XGB raw tabular branch only; contrasts with full CNN+XGB weighted blend."
+    },
+    {
+      "ablation_variant": "Model B",
+      "removed_component": "PCA",
+      "model_variant": "controlled_lightgbm_raw_no_pca",
+      "evidence_type": "controlled_lightgbm",
+      "notes": "Raw fused feature LightGBM without PCA; estimated loaded train+test memory 107.7 MB.; train_mode=full_train; train_seconds=176.63"
+    },
+    {
+      "ablation_variant": "Model C",
+      "removed_component": "advanced_behavioral_features",
+      "model_variant": "controlled_lightgbm_bert_basic5_no_advanced",
+      "evidence_type": "controlled_lightgbm",
+      "notes": "Removed advanced behavioral features; {'bert_dim': 768, 'basic_behavioral_features': ['basic_char_len_log', 'basic_word_count_log', 'basic_rating_deviation', 'basic_sentiment_compound', 'basic_verified_purchase'], 'kept_behavioral_indices': [0, 1, 2, 3, 4], 'selected_feature_dim': 773, 'note': 'basic behavioral columns selected from Phase 2 metadata'}; reducer={'reducer': 'PCA_randomized', 'fit_policy': 'fit train only; transform val/test', 'output_dim': 400, 'explained_variance_retained': 0.9509715437889099}; train_mode=full_train; train_seconds=95.57"
+    },
+    {
+      "ablation_variant": "Model D",
+      "removed_component": "tabular_blend_branch",
+      "model_variant": "phase5_cnn_bilstm_sequence",
+      "evidence_type": "direct_artifact",
+      "notes": "CNN-BiLSTM sequence branch only; contrasts with full weighted blend."
+    },
+    {
+      "ablation_variant": "Model E",
+      "removed_component": "PSO_PCA_advanced_behavioral_ensemble_nearest_available_baseline",
+      "model_variant": "dl_baseline",
+      "evidence_type": "direct_artifact_nearest_baseline",
+      "notes": "Nearest available baseline from Phase 4; it removes PSO and ensemble but still uses Phase 3 PCA and all 9 behavioral features. Do not overclaim it as a full no-PCA/no-advanced retrain."
+    }
+  ],
+  "fallback_decisions": [],
+  "known_limitations": [
+    "Phase 7 does not rerun BERT extraction, PSO, or full deep model training.",
+    "Model B and Model C are controlled LightGBM surrogate ablations, not full hybrid retrains.",
+    "Model A is branch-level when the selected Phase 5 blend has zero DL weight.",
+    "Model E uses the nearest available Phase 4 baseline artifact; it should not be overclaimed as a full no-PCA/no-advanced-behavior retrain.",
+    "Re-run after 2026-06-09 Phase 5 pipeline; final_ensemble maps to phase5_weighted_blend probabilities."
+  ],
+  "outputs": {
+    "input_validation": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_input_validation.csv",
+    "final_metrics": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_final_metrics.csv",
+    "target_audit": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_target_audit.csv",
+    "final_metrics_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase7_final_metrics.png",
+    "target_gap_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase7_target_gap.png",
+    "cv_metrics": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_cv_metrics.csv",
+    "cv_summary": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_cv_summary.csv",
+    "cv_summary_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase7_cv_summary.png",
+    "ablation_results": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_ablation_results.csv",
+    "ablation_controlled_reference": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_ablation_controlled_reference.csv",
+    "ablation_delta": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_ablation_delta.csv",
+    "ablation_delta_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase7_ablation_delta.png",
+    "error_analysis": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_error_analysis.csv",
+    "report_highlights": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_report_highlights.csv"
+  },
+  "environment": {
+    "python": "3.12.13 (main, Mar  4 2026, 09:23:07) [GCC 11.4.0]",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.35",
+    "numpy": "2.0.2",
+    "pandas": "2.2.2",
+    "sklearn": "1.6.1",
+    "lightgbm": "4.6.0"
+  }
+}

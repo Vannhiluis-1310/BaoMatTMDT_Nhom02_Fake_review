@@ -1,0 +1,8 @@
+order,notebook,output_prefix
+1,05_01_LightGBM_Raw.ipynb,phase5_lgbm_raw
+2,05_02_XGBoost_Raw.ipynb,phase5_xgb_raw
+3,05_03_MLP_Raw.ipynb,phase5_mlp_raw
+4,05_04_CNN_BiLSTM_Sequence.ipynb,phase5_cnn_bilstm_sequence
+5,05_05_Weighted_Blending.ipynb,phase5_weighted_blend
+6,05_06_Stacking_Calibration.ipynb,phase5_stacking_calibrated
+7,05_Hybrid_Ensemble.ipynb,phase5_final_selection

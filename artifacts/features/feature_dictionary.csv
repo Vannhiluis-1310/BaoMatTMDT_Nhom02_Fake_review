@@ -1,0 +1,10 @@
+feature_name,feature_group,formula,source_columns,fit_policy,missing_fallback
+basic_char_len_log,basic,log1p(character length of review text),text,deterministic per row,empty text -> 0 length
+basic_word_count_log,basic,log1p(word count of review text),text,deterministic per row,empty text -> 0 words
+basic_rating_deviation,basic,abs(rating - train_rating_mean),rating,train rating mean only,train mean or 0 if rating missing
+basic_sentiment_compound,basic,VADER compound or TextBlob polarity,text,"external lexicon, no label fitting",0 if backend unavailable
+basic_verified_purchase,basic,binary verified purchase flag,verified_purchase,deterministic per row,0 if column missing
+adv_review_velocity_30d,advanced,prior reviewer reviews in 30-day chronological window,"user_id, timestamp",train rows use prior train rows; val/test use train history only,0 if reviewer/time missing
+adv_product_burst_7d,advanced,prior product reviews in 7-day chronological window,"asin, timestamp",train rows use prior train rows; val/test use train history only,0 if product/time missing
+adv_reviewer_behavior_score,advanced,train-fitted unsupervised reviewer summary score,"user_id, rating/text/sentiment derived columns","reviewer map fit on train only, no labels",train global score for unknown reviewer
+adv_time_gap_hours_log,advanced,log1p(hours since previous reviewer review),"user_id, timestamp",train rows use prior train rows; val/test use train history only,train median gap or 0

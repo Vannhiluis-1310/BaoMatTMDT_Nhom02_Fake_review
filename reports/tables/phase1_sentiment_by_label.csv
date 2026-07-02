@@ -1,0 +1,3 @@
+label_name,review_count,sentiment_compound_mean,sentiment_compound_median,sentiment_positive_mean,sentiment_neutral_mean,sentiment_negative_mean,sentiment_backend
+fake,17494,0.45582802675202927,0.6238,0.3012698639533554,0.6483027323653824,0.04916777180747685,nltk_vader
+real,25255,0.4453646644228866,0.6369,0.21583258760641458,0.732282637101564,0.051882835082161946,nltk_vader

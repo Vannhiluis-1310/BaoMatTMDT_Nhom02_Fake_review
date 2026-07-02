@@ -1,0 +1,4 @@
+question,evidence,rule,decision
+Does PCA hurt DL?,MLP raw Macro F1 0.893034 vs MLP PCA Macro F1 0.868496,raw_macro_f1 - pca_macro_f1 >= 0.02,yes
+Is CNN-BiLSTM mismatched with PCA vector?,MLP PCA Macro F1 0.868496 vs CNN-BiLSTM PCA Macro F1 0.774833,mlp_pca_macro_f1 - cnn_pca_macro_f1 >= 0.02,yes
+Can DL contribute non-zero to final ensemble?,Best constrained candidate mlp_raw_dl0.30_xgb0.00_lgbm0.70 with DL weight 0.300000,non_zero_dl within 0.01 Macro F1 / ROC-AUC of phase7 best,no_or_inconclusive

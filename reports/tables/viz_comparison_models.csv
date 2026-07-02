@@ -1,0 +1,7 @@
+model_variant,ten_hien_thi,nhom,thu_tu,highlight
+sklearn_logistic_regression,Logistic Regression,classical,1,0
+sklearn_linear_svc,Linear SVM (calibrated),classical,2,0
+sklearn_random_forest,Random Forest,classical,3,0
+phase5_xgb_raw,XGBoost raw 777-d,pipeline,4,0
+phase5_cnn_bilstm_sequence,CNN-BiLSTM sequence,pipeline,5,0
+phase5_weighted_blend,Weighted blend (de xuat),pipeline,6,1

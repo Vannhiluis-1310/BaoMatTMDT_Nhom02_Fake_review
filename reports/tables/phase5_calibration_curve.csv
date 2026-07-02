@@ -1,0 +1,11 @@
+seed,split,model_variant,bin_index,mean_predicted_probability,fraction_of_positives
+42,val_calibration,blend_dl00_xgb05_lgbm05,0,0.07551474649674947,0.04534005037783375
+42,val_calibration,blend_dl00_xgb05_lgbm05,1,0.14248948004221756,0.11140939597315436
+42,val_calibration,blend_dl00_xgb05_lgbm05,2,0.23970042269014408,0.25072886297376096
+42,val_calibration,blend_dl00_xgb05_lgbm05,3,0.3468287473156948,0.3288590604026846
+42,val_calibration,blend_dl00_xgb05_lgbm05,4,0.4457960892468691,0.40625
+42,val_calibration,blend_dl00_xgb05_lgbm05,5,0.5463537144951705,0.6219512195121951
+42,val_calibration,blend_dl00_xgb05_lgbm05,6,0.6564249584549352,0.8947368421052632
+42,val_calibration,blend_dl00_xgb05_lgbm05,7,0.7568909591436386,0.92
+42,val_calibration,blend_dl00_xgb05_lgbm05,8,0.8549580917358398,0.96
+42,val_calibration,blend_dl00_xgb05_lgbm05,9,0.9614597244504798,0.9801324503311258

@@ -1,0 +1,7 @@
+item,value
+raw_minus_pca_macro_f1,0.024538089153112286
+mlp_pca_minus_cnn_pca_macro_f1,0.09366259922992304
+best_constrained_dl_weight,0.3
+best_constrained_macro_f1,0.8477880023221727
+best_constrained_precision_fake,0.9661654135338346
+best_constrained_roc_auc,0.9371795521696309

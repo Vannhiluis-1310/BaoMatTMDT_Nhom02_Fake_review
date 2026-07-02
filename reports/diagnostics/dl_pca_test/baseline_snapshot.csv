@@ -1,0 +1,5 @@
+model,macro_f1,precision_fake,roc_auc,notes
+final_ensemble_default_0.5,0.8558200139130405,0.9155660377358492,0.9115005769267904,Phase 7 final ensemble default threshold
+final_ensemble_selected_0.79,0.785981867953376,0.9604409857328146,0.9115005769267904,Phase 7 selected threshold
+lightgbm_test,0.8601004947159835,0.9169000933706816,0.9140879970260511,Phase 7 best tree baseline
+dl_pso_test,0.77934882410512,0.7818659658344284,0.8516683604336044,Phase 4 DL PSO baseline

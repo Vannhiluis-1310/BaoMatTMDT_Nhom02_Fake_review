@@ -1,0 +1,311 @@
+{
+  "generated_at_utc": "2026-06-01T08:35:02.369291+00:00",
+  "seed": 42,
+  "project_root": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews",
+  "input_dim": 400,
+  "phase3_metadata_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/phase3_metadata.json",
+  "phase3_reducer": {
+    "backend": "pca",
+    "path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/pca_or_svd.joblib",
+    "selected_components": 400,
+    "explained_variance_retained": 0.9510304372815881,
+    "variance_target": 0.98,
+    "variance_minimum": 0.95,
+    "target_dim_min": 300,
+    "target_dim_max": 400,
+    "selection_reason": "target_requires_above_preferred_range_but_target_max_meets_minimum",
+    "fit_policy": "fit on train only; transform validation/test"
+  },
+  "phase3_input": {
+    "feature_paths": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_train.npy",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_val.npy",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_test.npy"
+    },
+    "label_paths": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_train.npy",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_val.npy",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_test.npy"
+    },
+    "input_dim": 777,
+    "row_counts": {
+      "train": 29923,
+      "val": 6413,
+      "test": 6413
+    }
+  },
+  "baseline_config": {
+    "learning_rate": 0.001,
+    "dropout": 0.3,
+    "cnn_filters": 64,
+    "kernel_size": 5,
+    "lstm_hidden": 64,
+    "attention_dim": 64,
+    "focal_gamma": 2.0,
+    "batch_size": 64,
+    "component_block_weights": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "best_pso_params": {
+    "generated_at_utc": "2026-06-01T08:31:32.912886+00:00",
+    "seed": 42,
+    "input_dim": 400,
+    "pso_subset_ratio": 0.2,
+    "pso_subset_rows": 5984,
+    "pso_particles": 10,
+    "pso_iterations": 8,
+    "pso_trial_epochs": 5,
+    "pso_search_space": {
+      "learning_rate": [
+        0.0001,
+        0.005
+      ],
+      "dropout": [
+        0.1,
+        0.4
+      ],
+      "cnn_filters": [
+        64,
+        192
+      ],
+      "kernel_size": [
+        3,
+        7
+      ],
+      "lstm_hidden": [
+        64,
+        128
+      ],
+      "attention_dim": [
+        64,
+        128
+      ],
+      "focal_gamma": [
+        1.0,
+        3.0
+      ],
+      "batch_size": [
+        32,
+        64
+      ],
+      "pca_block_weight_1": [
+        0.6,
+        1.5
+      ],
+      "pca_block_weight_2": [
+        0.6,
+        1.5
+      ],
+      "pca_block_weight_3": [
+        0.6,
+        1.5
+      ],
+      "pca_block_weight_4": [
+        0.6,
+        1.5
+      ]
+    },
+    "pso_objective_weights": {
+      "macro_f1": 0.5,
+      "roc_auc": 0.3,
+      "precision_fake": 0.2
+    },
+    "bounds": {
+      "log10_learning_rate": {
+        "lower": -4.0,
+        "upper": -2.3010299956639813
+      },
+      "dropout": {
+        "lower": 0.1,
+        "upper": 0.4
+      },
+      "cnn_filters_continuous": {
+        "lower": 64.0,
+        "upper": 192.0
+      },
+      "kernel_size_continuous": {
+        "lower": 3.0,
+        "upper": 7.0
+      },
+      "lstm_hidden_continuous": {
+        "lower": 64.0,
+        "upper": 128.0
+      },
+      "attention_dim_continuous": {
+        "lower": 64.0,
+        "upper": 128.0
+      },
+      "focal_gamma": {
+        "lower": 1.0,
+        "upper": 3.0
+      },
+      "batch_size_continuous": {
+        "lower": 32.0,
+        "upper": 64.0
+      },
+      "pca_block_weight_1": {
+        "lower": 0.6,
+        "upper": 1.5
+      },
+      "pca_block_weight_2": {
+        "lower": 0.6,
+        "upper": 1.5
+      },
+      "pca_block_weight_3": {
+        "lower": 0.6,
+        "upper": 1.5
+      },
+      "pca_block_weight_4": {
+        "lower": 0.6,
+        "upper": 1.5
+      }
+    },
+    "best_position": [
+      -3.4875293357114745,
+      0.10802347820393315,
+      156.35274876052165,
+      7.0,
+      99.11768056966476,
+      80.7194441606428,
+      1.6648251434015697,
+      53.52823016617338,
+      1.358646308784656,
+      1.3888582407153278,
+      0.6084986570744113,
+      1.398481848821679
+    ],
+    "decoded_best_params": {
+      "learning_rate": 0.00032543979995710887,
+      "dropout": 0.10802347820393315,
+      "cnn_filters": 160,
+      "kernel_size": 7,
+      "lstm_hidden": 96,
+      "attention_dim": 96,
+      "focal_gamma": 1.6648251434015697,
+      "batch_size": 48,
+      "component_block_weights": [
+        1.358646308784656,
+        1.3888582407153278,
+        0.6084986570744113,
+        1.398481848821679
+      ]
+    },
+    "best_objective": -0.7917960225596838,
+    "best_validation_objective_score": 0.7917960225596838,
+    "best_validation_macro_f1": 0.7662583218789658,
+    "best_validation_precision_fake": 0.8023483365949119,
+    "best_validation_roc_auc": 0.8273239810040618,
+    "pyswarm_available": true,
+    "pyswarm_import_error": null,
+    "guardrails": {
+      "max_batch_size": 64,
+      "default_batch_size": 64,
+      "early_stopping_patience": 6,
+      "trial_epochs": 5
+    },
+    "trial_history_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase4_pso_trial_history.csv",
+    "objective_history_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase4_pso_objective_history.png"
+  },
+  "guardrails": {
+    "max_batch_size": 64,
+    "default_batch_size": 64,
+    "pso_subset_ratio": 0.2,
+    "pso_particles": 10,
+    "pso_iterations": 8,
+    "pso_trial_epochs": 5,
+    "pso_search_space": {
+      "learning_rate": [
+        0.0001,
+        0.005
+      ],
+      "dropout": [
+        0.1,
+        0.4
+      ],
+      "cnn_filters": [
+        64,
+        192
+      ],
+      "kernel_size": [
+        3,
+        7
+      ],
+      "lstm_hidden": [
+        64,
+        128
+      ],
+      "attention_dim": [
+        64,
+        128
+      ],
+      "focal_gamma": [
+        1.0,
+        3.0
+      ],
+      "batch_size": [
+        32,
+        64
+      ],
+      "pca_block_weight_1": [
+        0.6,
+        1.5
+      ],
+      "pca_block_weight_2": [
+        0.6,
+        1.5
+      ],
+      "pca_block_weight_3": [
+        0.6,
+        1.5
+      ],
+      "pca_block_weight_4": [
+        0.6,
+        1.5
+      ]
+    },
+    "pso_objective_weights": {
+      "macro_f1": 0.5,
+      "roc_auc": 0.3,
+      "precision_fake": 0.2
+    },
+    "baseline_max_epochs": 20,
+    "final_max_epochs": 30,
+    "early_stopping_patience": 6
+  },
+  "outputs": {
+    "baseline_model": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/baseline_model_dl.pth",
+    "best_model": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/best_model_dl.pth",
+    "best_params": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/best_params.json",
+    "phase4_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/phase4_metadata.json",
+    "input_validation": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase4_input_validation.csv",
+    "baseline_metrics": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase4_baseline_metrics.csv",
+    "baseline_history": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase4_baseline_training_history.csv",
+    "pso_trial_history": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase4_pso_trial_history.csv",
+    "pso_final_metrics": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase4_pso_final_metrics.csv",
+    "model_comparison": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase4_model_comparison.csv",
+    "baseline_val_prob": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/dl_baseline_val_prob.npy",
+    "baseline_test_prob": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/dl_baseline_test_prob.npy",
+    "pso_train_prob": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/dl_pso_train_prob.npy",
+    "pso_val_prob": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/dl_pso_val_prob.npy",
+    "pso_test_prob": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/dl_pso_test_prob.npy",
+    "baseline_training_curves": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase4_baseline_training_curves.png",
+    "pso_objective_history": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase4_pso_objective_history.png",
+    "pso_training_curves": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase4_pso_training_curves.png",
+    "model_comparison_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase4_model_comparison.png"
+  },
+  "environment": {
+    "python": "3.12.13 (main, Mar  4 2026, 09:23:07) [GCC 11.4.0]",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.35",
+    "numpy": "2.0.2",
+    "pandas": "2.2.2",
+    "torch": "2.11.0+cu128",
+    "cuda_available": true,
+    "cuda_device": "Tesla T4",
+    "pyswarm_available": true,
+    "pyswarm_import_error": null
+  }
+}

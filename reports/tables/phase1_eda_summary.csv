@@ -1,0 +1,11 @@
+metric,value
+original_rows,50000
+original_columns,13
+missing_values_total,22
+duplicate_rows,0
+duplicate_text_label_rows,7247
+class_imbalance_ratio,1.0227355475545128
+text_column,text
+label_column,label
+label_count__0,25281
+label_count__1,24719

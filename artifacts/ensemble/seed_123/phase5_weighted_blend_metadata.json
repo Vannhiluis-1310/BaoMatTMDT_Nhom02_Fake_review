@@ -1,0 +1,7 @@
+{
+  "seed": 123,
+  "selected_base_models": "phase5_cnn_bilstm_sequence+phase5_xgb_raw",
+  "selected_weights_json": "{\"phase5_cnn_bilstm_sequence\": 0.5, \"phase5_xgb_raw\": 0.5}",
+  "weight_step": 0.05,
+  "metrics_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/seed_123/phase5_weighted_blend_metrics.csv"
+}

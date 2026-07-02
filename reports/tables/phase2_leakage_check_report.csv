@@ -1,0 +1,10 @@
+check,status,detail
+behavioral_feature_count,pass,9
+label_not_used_in_feature_formulas,pass,No behavioral feature formula uses labels.
+rating_deviation_fit_policy,pass,Uses train_rating_mean only.
+reviewer_behavior_map_fit_policy,pass,"{""status"": ""generated"", ""reviewer_count"": 29628, ""global_score"": -7.29056945021839e-17}"
+timestamp_parse_rates,pass,"{""train"": 1.0, ""val"": 1.0, ""test"": 1.0}"
+sentiment_backend,pass,nltk_vader
+scaler_not_fit_before_fusion_section,pass,Scaler fit occurs only in the fusion section.
+val_unknown_reviewer_fallback_count,pass,6299
+test_unknown_reviewer_fallback_count,pass,6307

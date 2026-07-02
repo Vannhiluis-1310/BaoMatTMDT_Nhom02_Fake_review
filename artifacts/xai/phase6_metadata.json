@@ -1,0 +1,132 @@
+{
+  "generated_at_utc": "2026-06-11T06:22:15.050801+00:00",
+  "seed": 42,
+  "project_root": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews",
+  "device": "cuda",
+  "headline_track": "final_raw_777",
+  "legacy_appendix_track": "pca_400",
+  "final_track_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_metadata.json",
+  "input_dim_legacy": 400,
+  "subset_sizes": {
+    "robustness_requested": 1000,
+    "robustness_actual": 1000,
+    "shap_requested": 500,
+    "shap_actual": 500,
+    "lime_background_requested": 1000,
+    "lime_background_actual": 1000,
+    "lime_cases_requested": 6,
+    "lime_cases_actual": 6,
+    "final_shap_actual": 500,
+    "final_lime_cases_actual": 6
+  },
+  "adversarial_config": {
+    "attack_space": "pca_feature_space",
+    "surrogate_model": "dl_pso",
+    "fgsm_epsilons": [
+      0.01,
+      0.03,
+      0.05
+    ],
+    "pgd_epsilons": [
+      0.01,
+      0.03
+    ],
+    "pgd_steps": 5,
+    "feature_clamp": "train_pca_component_min_max",
+    "applies_to": "legacy_appendix_only"
+  },
+  "source_artifacts": {
+    "phase2_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/feature_metadata.json",
+    "phase5_xgb_raw": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/phase5_xgb_raw.joblib",
+    "phase5_weighted_blend_test_prob": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_weighted_blend_test_prob.npy",
+    "phase3_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/phase3_metadata.json",
+    "pca_reducer": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/pca_or_svd.joblib",
+    "phase4_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/phase4_metadata.json",
+    "best_model_dl": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/best_model_dl.pth",
+    "best_params": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/best_params.json",
+    "phase5_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/phase5_metadata.json",
+    "final_ensemble_model": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/final_ensemble_model.pkl",
+    "xgboost_model": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/xgboost_model.pkl",
+    "lightgbm_model": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/lightgbm_model.pkl"
+  },
+  "selected_phase5_candidate_legacy": {
+    "name": "blend_dl00_xgb05_lgbm05",
+    "config": {
+      "type": "weighted_blend",
+      "weights": {
+        "dl_pso_prob": 0.0,
+        "xgboost_prob": 0.5,
+        "lightgbm_prob": 0.5
+      }
+    },
+    "selected_threshold": 0.79
+  },
+  "outputs": {
+    "final_track": {
+      "input_validation": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_input_validation.csv",
+      "shap_subset_indices": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_shap_subset_indices.csv",
+      "shap_values_xgb": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_shap_values_xgb.npy",
+      "shap_global_importance": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_shap_global_importance.csv",
+      "shap_block_importance": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_shap_block_importance.csv",
+      "shap_top_behavioral_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase6_final_shap_top_behavioral.png",
+      "shap_summary_behavioral_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase6_final_shap_summary_behavioral.png",
+      "lime_background_indices": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_lime_background_indices.csv",
+      "lime_case_summary": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_lime_case_summary.csv",
+      "lime_feature_weights": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_lime_feature_weights.csv",
+      "lime_html_files": [
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_01_true_positive_fake.html",
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_02_true_negative_real.html",
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_03_false_positive_real_as_fake.html",
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_04_false_negative_fake_as_real.html",
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_05_highest_confidence_fake_prediction.html",
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_06_highest_confidence_real_prediction.html"
+      ]
+    },
+    "legacy_appendix": {
+      "input_validation": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_input_validation.csv",
+      "artifact_validation": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_artifact_validation.csv",
+      "predictor_smoke_test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_predictor_smoke_test.csv",
+      "robustness_subset_indices": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_robustness_subset_indices.csv",
+      "robustness_metrics": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_robustness_metrics.csv",
+      "robustness_metric_drops": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_robustness_metric_drops.csv",
+      "adversarial_config": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_adversarial_config.csv",
+      "robustness_metric_drop_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase6_robustness_metric_drop.png",
+      "shap_subset_indices": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_shap_subset_indices.csv",
+      "shap_values_lightgbm": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/shap_values_lightgbm.npy",
+      "shap_global_importance": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_shap_global_importance.csv",
+      "shap_top_components_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase6_shap_top_components.png",
+      "shap_summary_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase6_shap_summary.png",
+      "pca_component_loading_map": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_pca_component_loading_map.csv",
+      "lime_background_indices": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_lime_background_indices.csv",
+      "lime_case_summary": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_lime_case_summary.csv",
+      "lime_feature_weights": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_lime_feature_weights.csv",
+      "lime_html_files": [
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/lime_case_01_true_positive_fake.html",
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/lime_case_02_true_negative_real.html",
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/lime_case_03_false_positive_real_as_fake.html",
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/lime_case_04_false_negative_fake_as_real.html",
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/lime_case_05_highest_confidence_fake_prediction.html",
+        "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/lime_case_06_highest_confidence_real_prediction.html"
+      ]
+    }
+  },
+  "fallback_decisions": [],
+  "known_limitations": [
+    "Headline XAI explains phase5_xgb_raw on 777-d raw tabular features; CNN-BiLSTM sequence explanations are out of scope here.",
+    "FGSM/PGD attacks are generated in PCA feature space only (legacy appendix), not raw review text space.",
+    "Legacy SHAP/LIME explain PCA components; use phase6_pca_component_loading_map.csv for raw-group mapping.",
+    "LIME final-track cases use blend probabilities for selection but XGB raw for local explanation."
+  ],
+  "environment": {
+    "python": "3.12.13 (main, Mar  4 2026, 09:23:07) [GCC 11.4.0]",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.35",
+    "numpy": "2.0.2",
+    "pandas": "2.2.2",
+    "torch": "2.11.0+cu128",
+    "cuda_available": true,
+    "cuda_device": "Tesla T4",
+    "xgboost": "3.2.0",
+    "lightgbm": "4.6.0",
+    "shap": "0.52.0"
+  }
+}

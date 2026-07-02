@@ -1,0 +1,31 @@
+{
+  "project_name": "PSO-Optimized Hybrid Fake Review Detection",
+  "mode": "interactive",
+  "granularity": "standard",
+  "parallelization": false,
+  "commit_docs": false,
+  "model_profile": "balanced",
+  "runtime": {
+    "primary": "google_colab",
+    "local_execution_allowed": false,
+    "source_code_policy": "all_executable_source_in_phase_ipynb_files",
+    "notebook_plan": ".planning/NOTEBOOK_PLAN.md"
+  },
+  "workflow": {
+    "research": true,
+    "plan_check": true,
+    "verifier": true,
+    "nyquist_validation": true,
+    "auto_advance": false
+  },
+  "ml_constraints": {
+    "ram_gb": 12,
+    "dataset_rows_approx": 50000,
+    "pca_required": true,
+    "pso_initial_subset_ratio": 0.2,
+    "target_macro_f1_min": 0.89,
+    "target_macro_f1_goal": 0.92,
+    "target_precision_fake": 0.975,
+    "target_roc_auc": 0.93
+  }
+}

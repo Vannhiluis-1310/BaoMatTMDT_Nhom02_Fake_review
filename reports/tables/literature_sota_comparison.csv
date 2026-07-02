@@ -1,0 +1,17 @@
+tier,rank,method,year,dataset,split_protocol,metric_name,score,transformer,behavioral,sequence_dl,ensemble,threshold_opt,leakage_control,comparable_to_ours,notes
+A_comparable_text,1,Ours weighted_blend balanced,2026,Amazon Labeled 42.749,val-select tau test-audit,Macro F1,0.9463,Yes (ModernBERT),Yes (9),Yes (CNN-BiLSTM),Yes (weighted),Yes (tau=0.3),Yes (train-only fit),Yes,phase7_final_metrics.csv seed42; multiseed mean 0.9485±0.0018
+A_comparable_text,2,Ours weighted_blend default,2026,Amazon Labeled 42.749,70/15/15 seed42,Macro F1,0.9433,Yes,Yes,Yes,Yes,0.5 default,Yes,Yes,phase7_final_metrics.csv 2026-06-10
+A_comparable_text,3,Ours CNN-BiLSTM sequence,2026,Amazon Labeled 42.749,70/15/15 seed42,Macro F1,0.9324,Yes,Yes,Yes,No,0.5,Yes,Yes,Single best DL track
+A_comparable_text,4,Veluru et al. BERT+ResNet-50,2025,Custom multimodal 20k,70/15/15,F1,0.934,Yes,No,No,No,Not reported,Unknown,Partial,Multimodal text+image; not same dataset
+A_comparable_text,5,XGB/LGBM raw 777,2026,Amazon Labeled 42.749,70/15/15 seed42,Macro F1,~0.906,No,Yes (tabular),No,No,0.5,Yes,Yes,Tree strong baseline in our pipeline
+A_comparable_text,6,Refaeli & Hajek fine-tuned BERT,2021,Multi online review,Paper-specific,F1,Not standardized macro,Yes,No,No,No,Not reported,Unknown,Partial,Transformer only
+A_comparable_text,7,Bhuvaneshwari CNN-BiLSTM-Attention,2021,Amazon,Paper-specific,F1/Acc,>0.90 area,No,No,Yes,No,Not reported,Unknown,Partial,DL without modern transformer+behavioral stack
+A_comparable_text,8,Duma hybrid text+ratings+aspects,2023,Amazon aspects,Paper-specific,F1,Paper best,Partial,Partial,No,No,Not reported,Unknown,Partial,Uses ratings/aspects not our 9 behavioral
+A_comparable_text,9,Gupta RoBERTa thesis,2021,Yelp 1.4M,80/10/10,Weighted-F1,0.69,Yes,No,No,No,0.5,Unknown,No,Wrongly listed as Amazon 0.86 in old docs
+A_comparable_text,10,Mir SVM+BERT,2023,General reviews,Paper-specific,Accuracy,0.8781,Yes,No,No,No,Not reported,Unknown,Partial,SVM over BERT embeddings
+B_behavior_graph,11,Rayana & Akoglu collective,2015,Yelp graph,KDD setup,F1,~0.85+,No,Yes,No,No,No,Unknown,No,Graph collective spam
+B_behavior_graph,12,Wu DOS-GNN family,2024-25,Yelp/Amazon graph,Graph split,F1,~0.915,No,Yes (graph),No,No,No,Unknown,No,Different feature space
+C_foundational,13,Ott et al. SVM n-grams,2011,OpSpam 400,CV on gold,F1,~0.89,No,No,No,No,No,N/A,No,Small gold corpus
+C_foundational,14,Mukherjee behavioral SVM,2013,Yelp restaurant,Subset,Accuracy,0.678,No,Yes,No,No,No,Unknown,No,Behavioral pioneer
+C_foundational,15,Kennedy contextualized embeddings,2019,OpSpam,Paper-specific,Accuracy,Beats ML baselines,Yes,No,No,No,No,Unknown,No,Contextualized text only
+C_legacy_ours,16,Ours legacy PCA+PSO+blend,2026,Amazon Labeled 42.749,70/15/15 seed42,Macro F1,0.8558,Yes (BERT emb),Yes,Yes (PSO DL),Yes,0.79 prec-first,Yes,Yes,Superseded pipeline 2026-06-01; keep as ablation only

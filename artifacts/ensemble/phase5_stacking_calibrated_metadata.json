@@ -1,0 +1,11 @@
+{
+  "candidate_order": [
+    "phase5_cnn_bilstm_sequence",
+    "phase5_lgbm_raw",
+    "phase5_mlp_raw",
+    "phase5_xgb_raw"
+  ],
+  "selected_name": "phase5_stack_logistic",
+  "metrics_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase5_stacking_calibration_metrics.csv",
+  "selected_metrics_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase5_stacking_calibrated_metrics.csv"
+}

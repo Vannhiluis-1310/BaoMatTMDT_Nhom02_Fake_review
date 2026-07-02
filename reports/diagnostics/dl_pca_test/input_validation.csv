@@ -1,0 +1,14 @@
+item,value,status
+raw_train_shape,"(29923, 777)",pass
+raw_val_shape,"(6413, 777)",pass
+raw_test_shape,"(6413, 777)",pass
+pca_train_shape,"(29923, 400)",pass
+pca_val_shape,"(6413, 400)",pass
+pca_test_shape,"(6413, 400)",pass
+label_train_rows,29923,pass
+label_val_rows,6413,pass
+label_test_rows,6413,pass
+dl_pso_prob_exists,True,pass
+xgboost_prob_exists,True,pass
+lightgbm_prob_exists,True,pass
+final_ensemble_prob_exists,True,pass

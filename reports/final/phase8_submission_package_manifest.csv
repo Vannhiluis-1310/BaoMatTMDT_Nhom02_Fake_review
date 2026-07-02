@@ -1,0 +1,11 @@
+package_item,path,required,source_phase,note
+final_notebook,notebooks/08_Final_Report_Kaggle.ipynb,True,Phase 8,Clean final notebook for teacher submission and publishing.
+final_report,reports/final/Phase8_Final_Report.md,True,Phase 8,Generated final Markdown report.
+artifact_inventory,reports/final/phase8_artifact_inventory.csv,True,Phase 8,Delivery artifact audit.
+run_order,reports/final/phase8_run_order_checklist.csv,True,Phase 8,Colab notebook order.
+report_summary,reports/final/phase8_report_summary.csv,True,Phase 8,Compact report-ready facts.
+final_metrics,reports/tables/phase7_final_metrics.csv,True,Phase 7,Final model metrics.
+target_audit,reports/tables/phase7_target_audit.csv,True,Phase 7,Target pass/fail audit.
+ablation,reports/tables/phase7_ablation_results.csv,True,Phase 7,Ablation study evidence.
+robustness_xai,reports/tables/phase6_robustness_metrics.csv,True,Phase 6,Robustness evidence.
+models,artifacts/models/ and artifacts/ensemble/,True,Phase 4-5,Saved model artifacts.

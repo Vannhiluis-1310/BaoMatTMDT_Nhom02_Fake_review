@@ -1,0 +1,9 @@
+tier,rank,method,year,dataset,split_protocol,metric_name,score,transformer,behavioral,sequence_dl,ensemble,threshold_opt,leakage_control,comparable_to_ours,notes
+A_comparable_text,1,Ours weighted_blend balanced,2026,Amazon Labeled 42.749,val-select tau test-audit,Macro F1,0.9463,Yes (ModernBERT),Yes (9),Yes (CNN-BiLSTM),Yes (weighted),Yes (tau=0.3),Yes (train-only fit),Yes,phase7_final_metrics.csv seed42; multiseed mean 0.9485±0.0018
+A_comparable_text,2,Ours weighted_blend default,2026,Amazon Labeled 42.749,70/15/15 seed42,Macro F1,0.9433,Yes,Yes,Yes,Yes,0.5 default,Yes,Yes,phase7_final_metrics.csv 2026-06-10
+A_comparable_text,3,Ours CNN-BiLSTM sequence,2026,Amazon Labeled 42.749,70/15/15 seed42,Macro F1,0.9324,Yes,Yes,Yes,No,0.5,Yes,Yes,Single best DL track
+A_comparable_text,4,Veluru et al. BERT+ResNet-50,2025,Custom multimodal 20k,70/15/15,F1,0.934,Yes,No,No,No,Not reported,Unknown,Partial,Multimodal text+image; not same dataset
+A_comparable_text,5,XGB/LGBM raw 777,2026,Amazon Labeled 42.749,70/15/15 seed42,Macro F1,~0.906,No,Yes (tabular),No,No,0.5,Yes,Yes,Tree strong baseline in our pipeline
+A_comparable_text,6,Refaeli & Hajek fine-tuned BERT,2021,Multi online review,Paper-specific,F1,Not standardized macro,Yes,No,No,No,Not reported,Unknown,Partial,Transformer only
+A_comparable_text,7,Bhuvaneshwari CNN-BiLSTM-Attention,2021,Amazon,Paper-specific,F1/Acc,>0.90 area,No,No,Yes,No,Not reported,Unknown,Partial,DL without modern transformer+behavioral stack
+A_comparable_text,8,Duma hybrid text+ratings+aspects,2023,Amazon aspects,Paper-specific,F1,Paper best,Partial,Partial,No,No,Not reported,Unknown,Partial,Uses ratings/aspects not our 9 behavioral

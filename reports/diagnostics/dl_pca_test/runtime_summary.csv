@@ -1,0 +1,5 @@
+component,elapsed_sec
+mlp_raw_777,27.643424276999895
+mlp_pca_400,12.878595285999836
+cnn_bilstm_pca_400_diagnostic,1679.8735532009998
+ensemble_sweep,60.0

@@ -1,0 +1,73 @@
+{
+  "generated_at_utc": "2026-06-01T04:10:21.849611+00:00",
+  "seed": 42,
+  "source_phase2_metadata_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/feature_metadata.json",
+  "phase2_metadata_snapshot": {
+    "seed": 42,
+    "bert_dim": 768,
+    "behavioral_count": 9,
+    "fused_dim": 777,
+    "row_counts": {
+      "train": 29923,
+      "val": 6413,
+      "test": 6413
+    }
+  },
+  "input": {
+    "feature_paths": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_train.npy",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_val.npy",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_test.npy"
+    },
+    "label_paths": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_train.npy",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_val.npy",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/labels_test.npy"
+    },
+    "input_dim": 777,
+    "row_counts": {
+      "train": 29923,
+      "val": 6413,
+      "test": 6413
+    }
+  },
+  "scaling": {
+    "use_global_scaler": true,
+    "scaler_status": "fit_train_only",
+    "scaler_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/pca_scaler.joblib",
+    "fit_policy": "fit on train only; transform validation/test"
+  },
+  "reducer": {
+    "backend": "pca",
+    "path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/pca_or_svd.joblib",
+    "selected_components": 400,
+    "explained_variance_retained": 0.9510304372815881,
+    "variance_target": 0.98,
+    "variance_minimum": 0.95,
+    "target_dim_min": 300,
+    "target_dim_max": 400,
+    "selection_reason": "target_requires_above_preferred_range_but_target_max_meets_minimum",
+    "fit_policy": "fit on train only; transform validation/test"
+  },
+  "outputs": {
+    "features_final": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_train.npy",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_val.npy",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_test.npy"
+    },
+    "labels": {
+      "train": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/labels_train.npy",
+      "val": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/labels_val.npy",
+      "test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/labels_test.npy"
+    },
+    "feature_quality_report": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase3_feature_quality_report.csv",
+    "memory_report": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase3_memory_report.csv",
+    "selection_report": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase3_pca_selection_report.csv",
+    "component_variance_report": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase3_component_variance.csv"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "numpy": "2.0.2",
+    "pandas": "2.2.2"
+  }
+}

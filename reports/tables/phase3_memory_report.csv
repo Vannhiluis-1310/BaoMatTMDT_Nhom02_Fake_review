@@ -1,0 +1,7 @@
+stage,split,artifact,shape,dtype,memory_mb,process_memory_mb,memory_reduction_ratio_vs_raw_dim
+raw,train,features_raw_train.npy,"(29923, 777)",float32,88.6924,627.2109,0.5148005148005148
+reduced,train,features_final_train.npy,"(29923, 400)",float32,45.6589,627.2109,0.5148005148005148
+raw,val,features_raw_val.npy,"(6413, 777)",float32,19.0083,627.2109,0.5148005148005148
+reduced,val,features_final_val.npy,"(6413, 400)",float32,9.7855,627.2109,0.5148005148005148
+raw,test,features_raw_test.npy,"(6413, 777)",float32,19.0083,627.2109,0.5148005148005148
+reduced,test,features_final_test.npy,"(6413, 400)",float32,9.7855,627.2109,0.5148005148005148

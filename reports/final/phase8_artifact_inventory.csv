@@ -1,0 +1,40 @@
+phase,artifact_group,path,required,exists,file_size_bytes,note
+1,raw_dataset,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/data/final_labeled_fake_reviews.csv,True,True,15798533,Original dataset. Do not rewrite.
+1,processed_split,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/data/processed/clean_reviews.csv,True,True,15336710,Cleaned dataset from Phase 1.
+1,processed_split,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/data/processed/train.csv,True,True,10762701,Train split.
+1,processed_split,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/data/processed/val.csv,True,True,2284609,Validation split.
+1,processed_split,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/data/processed/test.csv,True,True,2289754,Test split.
+2,features,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/feature_metadata.json,True,True,4268,ModernBERT and behavioral feature metadata.
+2,features,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/feature_dictionary.csv,True,True,1474,Feature dictionary.
+2,features,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_train.npy,True,True,93000812,Raw fused train features.
+2,features,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_val.npy,True,True,19931732,Raw fused validation features.
+2,features,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_test.npy,True,True,19931732,Raw fused test features.
+3,pca,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/pca_or_svd.joblib,True,True,1252039,Train-fitted PCA/SVD object.
+3,pca,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/pca_scaler.joblib,True,True,19247,Train-fitted scaler.
+3,pca,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_train.npy,True,True,47876928,Reduced train features.
+3,pca,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_val.npy,True,True,10260928,Reduced validation features.
+3,pca,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_test.npy,True,True,10260928,Reduced test features.
+4,deep_model,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/best_model_dl.pth,True,True,886153,Best PSO-tuned DL checkpoint.
+4,deep_model,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/best_params.json,True,True,3299,Best PSO parameters.
+4,deep_model,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/phase4_metadata.json,True,True,9302,Phase 4 metadata.
+5,ensemble,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/final_ensemble_model.pkl,True,True,7067413,Final ensemble artifact.
+5,ensemble,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/xgboost_model.pkl,True,True,520764,XGBoost model artifact.
+5,ensemble,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/lightgbm_model.pkl,True,True,1092722,LightGBM model artifact.
+5,ensemble,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/stacking_meta_model.pkl,True,True,33976010,Stacking meta-model artifact.
+5,ensemble,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/probability_calibrator.pkl,False,True,1039,Calibration object when selected strategy uses it.
+5,ensemble,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/phase5_metadata.json,True,True,2509,Phase 5 metadata.
+5,tables,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase5_leaderboard.csv,True,True,3510,Phase 5 leaderboard (2026-06).
+5,tables,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/literature_sota_comparison.csv,True,True,2880,Literature SOTA comparison table.
+5,tables,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/literature_references_20.csv,True,True,6307,20 verified references.
+5,tables,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase5_selected_candidates_test_audit.csv,False,True,970,Phase 5 test audit (after 05_Hybrid rerun).
+6,robustness_xai,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_metadata.json,True,True,8830,Robustness and XAI metadata.
+6,robustness_xai,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_robustness_metrics.csv,True,True,3642,Robustness metrics.
+6,robustness_xai,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_shap_global_importance.csv,True,True,39229,SHAP global importance.
+6,robustness_xai,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_lime_case_summary.csv,True,True,1591,LIME case summary.
+7,evaluation,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_final_metrics.csv,True,True,14116,Final metrics.
+7,evaluation,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_target_audit.csv,True,True,1670,Target audit.
+7,evaluation,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_cv_summary.csv,True,True,438,CV summary.
+7,evaluation,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_ablation_results.csv,True,True,4471,Ablation results.
+7,evaluation,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_ablation_delta.csv,True,True,3094,Ablation deltas.
+7,evaluation,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase7_error_analysis.csv,True,True,72700,Error analysis.
+7,evaluation,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/evaluation/phase7_metadata.json,True,True,11284,Evaluation metadata.

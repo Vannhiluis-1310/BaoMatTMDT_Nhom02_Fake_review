@@ -1,0 +1,55 @@
+{
+  "generated_at_utc": "2026-06-11T06:22:15.042927+00:00",
+  "seed": 42,
+  "track": "final_raw_777",
+  "project_root": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews",
+  "input_dim": 777,
+  "model_variant": "phase5_xgb_raw",
+  "case_selection_model_variant": "phase5_weighted_blend",
+  "balanced_threshold": 0.3,
+  "precision_first_threshold": 0.6,
+  "lime_threshold": 0.3,
+  "lime_threshold_strategy": "phase5_balanced_validation_threshold",
+  "subset_sizes": {
+    "shap_requested": 500,
+    "shap_actual": 500,
+    "lime_background_requested": 1000,
+    "lime_background_actual": 1000,
+    "lime_cases_requested": 6,
+    "lime_cases_actual": 6
+  },
+  "source_artifacts": {
+    "phase2_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/feature_metadata.json",
+    "phase5_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/phase5_metadata.json",
+    "phase5_xgb_raw": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/phase5_xgb_raw.joblib",
+    "phase5_weighted_blend_metadata": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/ensemble/phase5_weighted_blend_metadata.json",
+    "phase5_weighted_blend_test_prob": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/predictions/phase5_weighted_blend_test_prob.npy",
+    "features_raw_test": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/features_raw_test.npy"
+  },
+  "outputs": {
+    "input_validation": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_input_validation.csv",
+    "shap_subset_indices": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_shap_subset_indices.csv",
+    "shap_values_xgb": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_shap_values_xgb.npy",
+    "shap_global_importance": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_shap_global_importance.csv",
+    "shap_block_importance": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_shap_block_importance.csv",
+    "shap_top_behavioral_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase6_final_shap_top_behavioral.png",
+    "shap_summary_behavioral_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase6_final_shap_summary_behavioral.png",
+    "lime_background_indices": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_lime_background_indices.csv",
+    "lime_case_summary": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_lime_case_summary.csv",
+    "lime_feature_weights": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase6_final_lime_feature_weights.csv",
+    "lime_html_files": [
+      "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_01_true_positive_fake.html",
+      "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_02_true_negative_real.html",
+      "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_03_false_positive_real_as_fake.html",
+      "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_04_false_negative_fake_as_real.html",
+      "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_05_highest_confidence_fake_prediction.html",
+      "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/xai/phase6_final_lime_case_06_highest_confidence_real_prediction.html"
+    ]
+  },
+  "fallback_decisions": [],
+  "known_limitations": [
+    "SHAP on 768 BERT dimensions is reported per-dimension and as an aggregate block; semantic token attribution requires a separate text-level method.",
+    "LIME cases are selected with weighted-blend probabilities but explained with the XGB raw tabular model (50% of the blend).",
+    "No adversarial robustness claim is made for the final raw tabular + sequence pipeline in this notebook."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "model_variant": "phase5_cnn_bilstm_sequence",
+  "input_source": "token_sequence_plus_behavioral_late_fusion",
+  "model_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/models/phase5_cnn_bilstm_sequence.pth",
+  "metrics_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase5_cnn_bilstm_sequence_metrics.csv",
+  "train_seconds": 68.698,
+  "config": {
+    "model_name": "answerdotai/ModernBERT-base",
+    "max_length": 160,
+    "batch_size": 64,
+    "max_epochs": 20,
+    "patience": 5
+  }
+}

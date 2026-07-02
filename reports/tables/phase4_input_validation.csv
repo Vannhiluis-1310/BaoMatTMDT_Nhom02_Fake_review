@@ -1,0 +1,4 @@
+seed,split,feature_path,label_path,rows,feature_dim,feature_dtype,label_dtype,feature_memory_mb,expected_input_dim,model_variant
+42,train,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_train.npy,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/labels_train.npy,29923,400,float32,int64,45.65887451171875,400,phase4_input_validation
+42,val,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_val.npy,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/labels_val.npy,6413,400,float32,int64,9.78546142578125,400,phase4_input_validation
+42,test,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/features_final_test.npy,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/pca/labels_test.npy,6413,400,float32,int64,9.78546142578125,400,phase4_input_validation

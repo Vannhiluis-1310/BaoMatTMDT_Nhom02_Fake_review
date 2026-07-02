@@ -1,0 +1,6 @@
+metric_column,ten_hien_thi,radar_use,higher_is_better
+macro_f1,Macro F1,1,1
+precision_fake,Precision Fake,1,1
+recall_fake,Recall Fake,1,1
+roc_auc,ROC-AUC,1,1
+pr_auc,PR-AUC,1,1

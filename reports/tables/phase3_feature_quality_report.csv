@@ -1,0 +1,4 @@
+split,rows,reduced_dim,dtype,non_finite_values,label_rows,label_distribution
+train,29923,400,float32,0,29923,"{""0"": 17677, ""1"": 12246}"
+val,6413,400,float32,0,6413,"{""0"": 3789, ""1"": 2624}"
+test,6413,400,float32,0,6413,"{""0"": 3789, ""1"": 2624}"

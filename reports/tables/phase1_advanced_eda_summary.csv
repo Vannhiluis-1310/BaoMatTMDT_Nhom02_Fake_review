@@ -1,0 +1,22 @@
+requirement,artifact_type,path,status,note,generated_at_utc,label_name_map,clean_rows
+EDA-01,table,/content/drive/MyDrive/Fake_reviews/reports/tables/phase1_length_by_label.csv,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-01,figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_length_by_label_boxplot.png,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-01,figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_word_count_by_label_boxplot.png,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-02,table,/content/drive/MyDrive/Fake_reviews/reports/tables/phase1_samples_by_label.csv,generated,Contains raw review text.,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-03,table,/content/drive/MyDrive/Fake_reviews/reports/tables/phase1_sentiment_by_label.csv,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-03,figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_sentiment_by_label.png,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-04,table,/content/drive/MyDrive/Fake_reviews/reports/tables/phase1_top_terms_by_label.csv,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-04,figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_top_terms_by_label.png,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-04,optional_figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_wordcloud_<label_name>.png,skipped,ENABLE_WORDCLOUD is False by default.,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-05,table,/content/drive/MyDrive/Fake_reviews/reports/tables/phase1_temporal_stats.csv,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-05,figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_review_volume_over_time.png,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-05,figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_fake_rate_by_time.png,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-05,figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_fake_rate_by_hour.png,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-06,table,/content/drive/MyDrive/Fake_reviews/reports/tables/phase1_user_burst_stats.csv,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-07,table,/content/drive/MyDrive/Fake_reviews/reports/tables/phase1_rating_label_stats.csv,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-07,figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_rating_vs_label.png,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-07,figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_fake_rate_by_rating.png,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-08,table,/content/drive/MyDrive/Fake_reviews/reports/tables/phase1_product_fake_rate.csv,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-08,figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_top_product_fake_rate.png,generated,,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-08,table,/content/drive/MyDrive/Fake_reviews/reports/tables/phase1_category_fake_rate.csv,skipped,No category-like column found.,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749
+EDA-08,figure,/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_category_fake_rate.png,skipped,No category-like column found.,2026-05-31T12:51:11.410766+00:00,"{""0"": ""real"", ""1"": ""fake""}",42749

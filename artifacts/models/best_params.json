@@ -1,0 +1,160 @@
+{
+  "generated_at_utc": "2026-06-01T08:31:32.912886+00:00",
+  "seed": 42,
+  "input_dim": 400,
+  "pso_subset_ratio": 0.2,
+  "pso_subset_rows": 5984,
+  "pso_particles": 10,
+  "pso_iterations": 8,
+  "pso_trial_epochs": 5,
+  "pso_search_space": {
+    "learning_rate": [
+      0.0001,
+      0.005
+    ],
+    "dropout": [
+      0.1,
+      0.4
+    ],
+    "cnn_filters": [
+      64,
+      192
+    ],
+    "kernel_size": [
+      3,
+      7
+    ],
+    "lstm_hidden": [
+      64,
+      128
+    ],
+    "attention_dim": [
+      64,
+      128
+    ],
+    "focal_gamma": [
+      1.0,
+      3.0
+    ],
+    "batch_size": [
+      32,
+      64
+    ],
+    "pca_block_weight_1": [
+      0.6,
+      1.5
+    ],
+    "pca_block_weight_2": [
+      0.6,
+      1.5
+    ],
+    "pca_block_weight_3": [
+      0.6,
+      1.5
+    ],
+    "pca_block_weight_4": [
+      0.6,
+      1.5
+    ]
+  },
+  "pso_objective_weights": {
+    "macro_f1": 0.5,
+    "roc_auc": 0.3,
+    "precision_fake": 0.2
+  },
+  "bounds": {
+    "log10_learning_rate": {
+      "lower": -4.0,
+      "upper": -2.3010299956639813
+    },
+    "dropout": {
+      "lower": 0.1,
+      "upper": 0.4
+    },
+    "cnn_filters_continuous": {
+      "lower": 64.0,
+      "upper": 192.0
+    },
+    "kernel_size_continuous": {
+      "lower": 3.0,
+      "upper": 7.0
+    },
+    "lstm_hidden_continuous": {
+      "lower": 64.0,
+      "upper": 128.0
+    },
+    "attention_dim_continuous": {
+      "lower": 64.0,
+      "upper": 128.0
+    },
+    "focal_gamma": {
+      "lower": 1.0,
+      "upper": 3.0
+    },
+    "batch_size_continuous": {
+      "lower": 32.0,
+      "upper": 64.0
+    },
+    "pca_block_weight_1": {
+      "lower": 0.6,
+      "upper": 1.5
+    },
+    "pca_block_weight_2": {
+      "lower": 0.6,
+      "upper": 1.5
+    },
+    "pca_block_weight_3": {
+      "lower": 0.6,
+      "upper": 1.5
+    },
+    "pca_block_weight_4": {
+      "lower": 0.6,
+      "upper": 1.5
+    }
+  },
+  "best_position": [
+    -3.4875293357114745,
+    0.10802347820393315,
+    156.35274876052165,
+    7.0,
+    99.11768056966476,
+    80.7194441606428,
+    1.6648251434015697,
+    53.52823016617338,
+    1.358646308784656,
+    1.3888582407153278,
+    0.6084986570744113,
+    1.398481848821679
+  ],
+  "decoded_best_params": {
+    "learning_rate": 0.00032543979995710887,
+    "dropout": 0.10802347820393315,
+    "cnn_filters": 160,
+    "kernel_size": 7,
+    "lstm_hidden": 96,
+    "attention_dim": 96,
+    "focal_gamma": 1.6648251434015697,
+    "batch_size": 48,
+    "component_block_weights": [
+      1.358646308784656,
+      1.3888582407153278,
+      0.6084986570744113,
+      1.398481848821679
+    ]
+  },
+  "best_objective": -0.7917960225596838,
+  "best_validation_objective_score": 0.7917960225596838,
+  "best_validation_macro_f1": 0.7662583218789658,
+  "best_validation_precision_fake": 0.8023483365949119,
+  "best_validation_roc_auc": 0.8273239810040618,
+  "pyswarm_available": true,
+  "pyswarm_import_error": null,
+  "guardrails": {
+    "max_batch_size": 64,
+    "default_batch_size": 64,
+    "early_stopping_patience": 6,
+    "trial_epochs": 5
+  },
+  "trial_history_path": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/tables/phase4_pso_trial_history.csv",
+  "objective_history_figure": "/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/reports/figures/phase4_pso_objective_history.png"
+}

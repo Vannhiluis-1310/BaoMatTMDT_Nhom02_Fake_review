@@ -1,0 +1,4 @@
+split,rows,dim,dtype,status,elapsed_seconds,path,model_name,max_length,batch_size
+train,29923,768,float32,generated,299.748,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/bert_train.npy,answerdotai/ModernBERT-base,160,8
+val,6413,768,float32,generated,62.628,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/bert_val.npy,answerdotai/ModernBERT-base,160,8
+test,6413,768,float32,generated,65.102,/content/drive/MyDrive/BaoMatCuoiKy/Fake_reviews/artifacts/features/bert_test.npy,answerdotai/ModernBERT-base,160,8
