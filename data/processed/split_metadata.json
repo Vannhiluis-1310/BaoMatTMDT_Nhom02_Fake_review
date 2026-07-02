@@ -1,0 +1,76 @@
+{
+  "generated_at_utc": "2026-05-31T12:50:17.117092+00:00",
+  "seed": 42,
+  "test_size": 0.15,
+  "val_size": 0.15,
+  "train_size_effective": 0.69997,
+  "schema": {
+    "text_col": "text",
+    "label_col": "label",
+    "reviewer_col": "user_id",
+    "product_col": "asin",
+    "rating_col": "rating",
+    "timestamp_col": "timestamp"
+  },
+  "label_column": "label",
+  "label_output_column": "label_binary",
+  "row_counts": {
+    "clean": 42749,
+    "train": 29923,
+    "val": 6413,
+    "test": 6413
+  },
+  "label_distribution": {
+    "clean": {
+      "0": {
+        "count": 25255,
+        "percent": 59.0774
+      },
+      "1": {
+        "count": 17494,
+        "percent": 40.9226
+      }
+    },
+    "train": {
+      "0": {
+        "count": 17677,
+        "percent": 59.075
+      },
+      "1": {
+        "count": 12246,
+        "percent": 40.925
+      }
+    },
+    "val": {
+      "0": {
+        "count": 3789,
+        "percent": 59.0831
+      },
+      "1": {
+        "count": 2624,
+        "percent": 40.9169
+      }
+    },
+    "test": {
+      "0": {
+        "count": 3789,
+        "percent": 59.0831
+      },
+      "1": {
+        "count": 2624,
+        "percent": 40.9169
+      }
+    }
+  },
+  "files": {
+    "clean": "/content/drive/MyDrive/Fake_reviews/data/processed/clean_reviews.csv",
+    "train": "/content/drive/MyDrive/Fake_reviews/data/processed/train.csv",
+    "val": "/content/drive/MyDrive/Fake_reviews/data/processed/val.csv",
+    "test": "/content/drive/MyDrive/Fake_reviews/data/processed/test.csv",
+    "schema_metadata": "/content/drive/MyDrive/Fake_reviews/data/processed/schema_metadata.json",
+    "eda_summary": "/content/drive/MyDrive/Fake_reviews/reports/tables/phase1_eda_summary.csv",
+    "cleaning_report": "/content/drive/MyDrive/Fake_reviews/reports/tables/phase1_cleaning_report.csv",
+    "label_distribution_figure": "/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_label_distribution.png",
+    "review_length_figure": "/content/drive/MyDrive/Fake_reviews/reports/figures/phase1_review_length_distribution.png"
+  }
+}
